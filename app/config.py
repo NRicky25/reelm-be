@@ -4,7 +4,7 @@ from datetime import date
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import field_validator
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -27,6 +27,15 @@ class Settings(BaseSettings):
     # Override "today" (YYYY-MM-DD) for release-date logic, e.g. to keep the
     # demo catalogue's NEW badges stable. Empty = the real date.
     catalog_today: date | None = None
+
+    # Admin panel at /admin. It stays OFF until ADMIN_PASSWORD is set.
+    admin_username: str = "admin"
+    admin_password: SecretStr | None = None
+    # Signs the admin login cookie. If unset, a random key is made at startup
+    # (you'll just need to log in again after each restart).
+    admin_secret_key: SecretStr | None = None
+    # Send the admin cookie over HTTPS only. Turn on in production.
+    admin_cookie_secure: bool = False
 
     @field_validator("database_url")
     @classmethod

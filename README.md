@@ -40,6 +40,17 @@ seed/catalogue.json    demo catalogue exported from reelm-fe
 tests/                 pytest (in-memory SQLite)
 ```
 
+## Admin panel
+
+`http://localhost:8000/admin`. It's **off until `ADMIN_PASSWORD` is set** in `.env` (username `admin`
+by default). Manage titles, seasons, episodes, genres and videos there.
+
+- Genres, languages, cast and placeholder colours are typed as comma-separated text.
+- Leave a title's slug empty to generate it from the name.
+- An episode needs a **video** to be playable; without one it shows as "coming soon".
+- The frontend caches API responses for up to 60 s, so edits can take a minute to appear.
+- Before deploying: set `ADMIN_SECRET_KEY`, use a strong password and `ADMIN_COOKIE_SECURE=true`.
+
 ## Database
 
 Defaults to a `reelm.db` SQLite file in this folder. To use Supabase:

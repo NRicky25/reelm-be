@@ -43,6 +43,9 @@ class Genre(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(60), unique=True)
 
+    def __str__(self) -> str:
+        return self.name
+
     # Deleting a genre removes its links (also in Python, not only via the DB).
     title_links: Mapped[list["TitleGenre"]] = relationship(
         back_populates="genre", cascade="all, delete-orphan", passive_deletes=True
@@ -136,6 +139,9 @@ class Title(Base):
     def genres(self) -> list[str]:
         return [link.genre.name for link in self.genre_links if link.genre]
 
+    def __str__(self) -> str:
+        return self.name
+
     def __repr__(self) -> str:
         return f"<Title {self.slug}>"
 
@@ -150,7 +156,15 @@ class Season(Base):
     )
     number: Mapped[int] = mapped_column(Integer)
 
-    title: Mapped[Title] = relationship(back_populates="seasons")
+    title: Mapped[Title] = relationship(back_populates="seasons", lazy="joined")
+
+    def __str__(self) -> str:
+        return (
+            f"{self.title.name} · Season {self.number}"
+            if self.title
+            else f"Season {self.number}"
+        )
+
     episodes: Mapped[list["Episode"]] = relationship(
         back_populates="season",
         order_by="Episode.number",
@@ -182,3 +196,6 @@ class Episode(Base):
 
     season: Mapped[Season] = relationship(back_populates="episodes")
     video: Mapped[Video | None] = relationship(lazy="joined")
+
+    def __str__(self) -> str:
+        return f"E{self.number} · {self.name}"

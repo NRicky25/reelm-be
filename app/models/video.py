@@ -61,6 +61,11 @@ class Video(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_now, server_default=func.now()
     )
+
+    def __str__(self) -> str:
+        ref = self.playback_id or self.url or self.upload_id or self.id
+        return f"{self.provider.value}: {ref[:60]} ({self.status.value})"
+
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_now, onupdate=_now, server_default=func.now()
     )
