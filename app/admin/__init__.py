@@ -1,17 +1,20 @@
 """Admin panel (SQLAdmin) mounted at /admin, behind a password."""
 
 import logging
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI
 from sqladmin import Admin
 from sqlalchemy.engine import Engine
+from sqlalchemy.orm import sessionmaker
 from starlette.middleware import Middleware
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.admin.auth import AdminAuth, admin_password
-from app.admin.views import ALL_VIEWS
+from app.admin.upload import UploadView
+from app.admin.views import ALL_VIEWS, configure_views
 from app.config import Settings
 
 log = logging.getLogger(__name__)
@@ -53,7 +56,12 @@ def setup_admin(app: FastAPI, engine: Engine, settings: Settings) -> Admin | Non
         title="Reelm Admin",
         authentication_backend=AdminAuth(settings),
         middlewares=[Middleware(SameOriginMiddleware)],
+        templates_dir=str(Path(__file__).parent / "templates"),
     )
+    configure_views(settings)
     for view in ALL_VIEWS:
         admin.add_view(view)
+    UploadView.session_maker = sessionmaker(bind=engine, expire_on_commit=False)
+    UploadView.settings = settings
+    admin.add_view(UploadView)
     return admin

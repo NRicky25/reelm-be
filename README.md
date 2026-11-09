@@ -67,6 +67,18 @@ Defaults to a `reelm.db` SQLite file in this folder. To use Supabase:
 Lists use JSON on SQLite and JSONB on Postgres. SQLite runs with foreign keys ON so deletes behave
 the same as on Postgres. Every episode / movie has its own `videos` row.
 
+## Uploading videos (Mux)
+
+1. Put `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET` in `.env` (Mux → Settings → Access Tokens, *Mux Video: Read + Write*).
+2. Admin → **Media → Upload video**: pick a show/episode (or a movie) and a file. The file goes straight from
+   your browser to Mux; the page then checks with Mux until it's ready (usually under a minute for short clips).
+3. Uploading replaces the episode's old video (its Mux asset is deleted too). Deleting a title / episode / video
+   in the admin also deletes the Mux asset, which matters on the free plan (10 videos).
+
+**Webhooks (for production):** in Mux → Settings → Webhooks, add `https://<your-api>/webhooks/mux` and put the
+signing secret in `MUX_WEBHOOK_SECRET`. Requests are rejected unless the `Mux-Signature` is valid and recent.
+Locally you don't need webhooks: the upload page polls Mux instead.
+
 ## Videos
 
 `videos` stores the provider (`mux` or `external`) and its IDs, never a hard-coded Mux URL.

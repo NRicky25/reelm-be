@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.admin import setup_admin
 from app.config import get_settings
 from app.db import engine, get_db
-from app.routers import catalog
+from app.routers import catalog, webhooks
 
 app = FastAPI(title="Reelm API", version="0.1.0")
 
@@ -23,6 +23,7 @@ app.add_middleware(
 
 
 app.include_router(catalog.router)
+app.include_router(webhooks.router)
 setup_admin(app, engine, get_settings())
 
 

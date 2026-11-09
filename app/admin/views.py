@@ -13,13 +13,15 @@ from typing import Any, ClassVar, TypeVar
 
 import anyio
 from sqladmin import ModelView
-from sqlalchemy import delete, exists, select
+from sqlalchemy import exists, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from wtforms import Form, StringField, validators
 
+from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
+from app.services.mux import MuxClient, MuxError
 
 T = TypeVar("T")
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -117,10 +119,29 @@ def _video_ids_of_titles(session: Session, title_ids: list[str]) -> list[str]:
     return [v for v in (*movie, *episodes) if v]
 
 
+_settings: Settings | None = None
+
+
+def configure_views(settings: Settings) -> None:
+    """Called by setup_admin: lets the views reach Mux when deleting videos."""
+    global _settings
+    _settings = settings
+
+
 def _delete_videos(session: Session, video_ids: list[str]) -> None:
-    if video_ids:
-        session.execute(delete(Video).where(Video.id.in_(video_ids)))
-        session.commit()
+    # imported here to avoid a circular import
+    from app.admin.upload import delete_videos_everywhere
+
+    mux = (
+        MuxClient.from_settings(_settings)
+        if _settings and _settings.mux_enabled
+        else None
+    )
+    try:
+        delete_videos_everywhere(session, video_ids, mux)
+    finally:
+        if mux:
+            mux.close()
 
 
 class DeletesOwnVideosMixin:
@@ -461,6 +482,23 @@ class VideoAdmin(BaseAdmin, model=Video):
                 "This video is used by an episode or movie. Remove it there first."
             )
         await super().on_model_delete(model, request)
+
+    async def after_model_delete(self, model: Video, request: Request) -> None:
+        # The row is gone; remove the Mux asset too so it doesn't count toward the plan limit.
+        if (
+            model.provider.value == "mux"
+            and model.asset_id
+            and _settings
+            and _settings.mux_enabled
+        ):
+            mux = MuxClient.from_settings(_settings)
+            try:
+                await anyio.to_thread.run_sync(mux.delete_asset, model.asset_id)
+            except MuxError:
+                pass  # best effort; it can also be removed in the Mux dashboard
+            finally:
+                mux.close()
+        await super().after_model_delete(model, request)
 
 
 ALL_VIEWS = [TitleAdmin, SeasonAdmin, EpisodeAdmin, GenreAdmin, VideoAdmin]

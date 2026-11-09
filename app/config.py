@@ -37,6 +37,16 @@ class Settings(BaseSettings):
     # Send the admin cookie over HTTPS only. Turn on in production.
     admin_cookie_secure: bool = False
 
+    # Mux video hosting (Settings > Access Tokens, "Mux Video: Read + Write").
+    mux_token_id: str | None = None
+    mux_token_secret: SecretStr | None = None
+    # Webhooks > signing secret. Optional locally: the upload page also polls Mux.
+    mux_webhook_secret: SecretStr | None = None
+
+    @property
+    def mux_enabled(self) -> bool:
+        return bool(self.mux_token_id and self.mux_token_secret)
+
     @field_validator("database_url")
     @classmethod
     def use_psycopg3_driver(cls, v: str) -> str:
