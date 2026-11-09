@@ -1,0 +1,190 @@
+"""Catalogue API: shapes must match reelm-fe/src/data/types.ts."""
+
+from datetime import date
+
+import pytest
+
+from app.config import get_settings
+from app.models import Episode
+
+TITLE_KEYS = {
+    "id", "slug", "type", "name", "description", "year", "genres", "ageRating",
+    "audioLanguages", "subtitleLanguages", "colors", "featured", "staffPick",
+    "addedAt", "studio", "cast",
+}  # fmt: skip
+
+
+@pytest.fixture(autouse=True)
+def fixed_today(monkeypatch):
+    """Pin 'today' to the demo catalogue's date so NEW / released logic is stable."""
+    get_settings.cache_clear()
+    monkeypatch.setenv("CATALOG_TODAY", "2026-11-08")
+    yield
+    get_settings.cache_clear()
+
+
+def test_title_shape_matches_frontend(client):
+    t = client.get("/titles/echoes-of-the-starfall").json()
+    assert TITLE_KEYS <= t.keys()
+    assert t["genres"] == ["Sci-Fi", "Action", "Drama"]
+    assert "durationSec" not in t and "videoUrl" not in t  # series: no movie fields
+    ep = t["seasons"][1]["episodes"][6]
+    assert ep["id"] == "echoes-of-the-starfall-s2e7"
+    assert ep["releaseDate"] == "2026-10-29"
+    assert ep["videoUrl"].endswith(".m3u8")
+    assert {"durationSec", "thumbUrl", "introStartSec", "introEndSec"} <= ep.keys()
+
+
+def test_movie_has_video_and_no_seasons(client):
+    m = client.get("/titles/the-last-lighthouse").json()
+    assert m["type"] == "movie"
+    assert "seasons" not in m
+    assert m["videoUrl"] and m["durationSec"] == 112 * 60
+    assert m["cast"] == ["Elena Marsh", "Tomas Reyes", "Iris Hale"]
+
+
+def test_unknown_title_is_404(client):
+    assert client.get("/titles/nope").status_code == 404
+    assert client.get("/titles/nope/related").status_code == 404
+
+
+def test_filters(client):
+    anime = client.get("/titles", params={"type": "anime"}).json()
+    assert anime and all(t["type"] == "anime" for t in anime)
+
+    featured = client.get("/titles", params={"featured": "true"}).json()
+    assert {t["slug"] for t in featured} == {
+        "echoes-of-the-starfall", "the-last-lighthouse", "mochi-detective", "glass-harbor",
+    }  # fmt: skip
+
+    picks = client.get("/titles", params={"staffPick": "true"}).json()
+    assert picks and all(t["staffPick"] for t in picks)
+
+    by_slug = client.get(
+        "/titles", params={"genre": "slice-of-life", "type": "anime"}
+    ).json()
+    by_name = client.get(
+        "/titles", params={"genre": "Slice of Life", "type": "anime"}
+    ).json()
+    assert by_slug == by_name and all("Slice of Life" in t["genres"] for t in by_slug)
+
+    some = client.get("/titles", params={"slugs": "hollow-tide,flatmates"}).json()
+    assert {t["slug"] for t in some} == {"hollow-tide", "flatmates"}
+
+    assert len(client.get("/titles", params={"limit": 3}).json()) == 3
+
+
+def test_lists(client):
+    recent = client.get("/titles", params={"list": "recent"}).json()
+    added = [t["addedAt"] for t in recent]
+    assert added == sorted(added, reverse=True)
+
+    az = [t["name"] for t in client.get("/titles", params={"list": "az"}).json()]
+    assert az == sorted(az, key=str.lower)
+
+    dub = client.get("/titles", params={"type": "anime", "list": "dub"}).json()
+    assert dub and all(t.get("dub") for t in dub)
+
+    assert client.get("/titles", params={"list": "nonsense"}).status_code == 422
+
+
+def test_new_episodes_are_recent_and_sorted(client):
+    new = client.get("/titles", params={"type": "anime", "list": "new"}).json()
+    assert new
+    on = date(2026, 11, 8)
+    latest = []
+    for t in new:
+        eps = [
+            e
+            for s in t["seasons"]
+            for e in s["episodes"]
+            if e.get("videoUrl") and date.fromisoformat(e["releaseDate"]) <= on
+        ]
+        newest = max(date.fromisoformat(e["releaseDate"]) for e in eps)
+        assert (on - newest).days <= 14
+        latest.append(newest)
+    assert latest == sorted(latest, reverse=True)
+
+
+def test_related_shares_a_genre(client):
+    rel = client.get("/titles/echoes-of-the-starfall/related").json()
+    assert rel and all(t["slug"] != "echoes-of-the-starfall" for t in rel)
+    assert all({"Sci-Fi", "Action", "Drama"} & set(t["genres"]) for t in rel)
+
+
+def test_search(client):
+    names = [t["name"] for t in client.get("/search", params={"q": "star"}).json()]
+    assert names[0] == "Starlit Courier"  # name starts with the query: ranked first
+    assert set(names) == {
+        "Starlit Courier",
+        "Echoes of the Starfall",
+        "Lone Star Diner",
+    }
+    # genre match, no duplicates even though titles have several genres
+    docs = client.get("/search", params={"q": "documentary"}).json()
+    assert len(docs) == len({t["id"] for t in docs}) == 2
+    assert client.get("/search", params={"q": "   "}).json() == []
+
+
+def test_genres(client):
+    anime = client.get("/genres", params={"type": "anime"}).json()
+    assert "Slice of Life" in anime and anime == sorted(anime)
+    assert "Reality" not in anime
+    assert "Reality" in client.get("/genres", params={"type": "series"}).json()
+
+
+def test_playback_episode(client):
+    p = client.get(
+        "/playback/echoes-of-the-starfall", params={"ep": "echoes-of-the-starfall-s2e7"}
+    ).json()
+    assert p["season"] == 2 and p["episode"]["number"] == 7
+    assert p["videoUrl"].endswith(".m3u8")
+    assert p["introStartSec"] == 5 and p["introEndSec"] == 35
+    assert p["next"] == {"season": 2, "episodeId": "echoes-of-the-starfall-s2e8"}
+    assert p["title"]["slug"] == "echoes-of-the-starfall"
+
+
+def test_playback_defaults_to_first_episode_and_crosses_seasons(client):
+    first = client.get("/playback/echoes-of-the-starfall").json()
+    assert first["episode"]["id"] == "echoes-of-the-starfall-s1e1"
+    end_of_s1 = client.get(
+        "/playback/echoes-of-the-starfall",
+        params={"ep": "echoes-of-the-starfall-s1e12"},
+    ).json()
+    assert end_of_s1["next"] == {
+        "season": 2,
+        "episodeId": "echoes-of-the-starfall-s2e1",
+    }
+
+
+def test_playback_movie(client):
+    p = client.get("/playback/the-last-lighthouse").json()
+    assert "episode" not in p and "next" not in p
+    assert p["videoUrl"].endswith(".mp4") and p["durationSec"] == 112 * 60
+
+
+def test_playback_unavailable(client, db):
+    # future episode
+    assert (
+        client.get(
+            "/playback/echoes-of-the-starfall",
+            params={"ep": "echoes-of-the-starfall-s2e12"},
+        ).status_code
+        == 404
+    )
+    # released episode whose video was removed
+    ep = db.get(Episode, "echoes-of-the-starfall-s1e3")
+    ep.video = None
+    db.commit()
+    r = client.get("/playback/echoes-of-the-starfall", params={"ep": ep.id})
+    assert r.status_code == 404
+    listed = client.get("/titles/echoes-of-the-starfall").json()["seasons"][0][
+        "episodes"
+    ][2]
+    assert "videoUrl" not in listed
+    assert client.get("/playback/nope").status_code == 404
+
+
+def test_cors_allows_frontend(client):
+    r = client.get("/titles", headers={"Origin": "http://localhost:3000"})
+    assert r.headers["access-control-allow-origin"] == "http://localhost:3000"

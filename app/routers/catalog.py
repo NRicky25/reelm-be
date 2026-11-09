@@ -1,0 +1,82 @@
+"""Public, read-only catalogue endpoints used by reelm-fe."""
+
+from typing import Annotated, Literal
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+
+from app.db import get_db
+from app.models import TitleType
+from app.schemas.catalog import PlayableOut, TitleOut
+from app.services import catalog
+
+router = APIRouter(tags=["catalogue"])
+DB = Annotated[Session, Depends(get_db)]
+
+# Omit None fields so responses match the frontend's optional (`?:`) fields.
+OPTS = {"response_model_exclude_none": True, "response_model_by_alias": True}
+
+
+@router.get("/titles", response_model=list[TitleOut], **OPTS)
+def list_titles(
+    db: DB,
+    type: TitleType | None = None,
+    genre: Annotated[
+        str | None, Query(description="Genre name or slug, e.g. slice-of-life")
+    ] = None,
+    list_name: Annotated[
+        Literal["new", "recent", "az", "sub", "dub"] | None,
+        Query(
+            alias="list",
+            description="new = recently released episodes, recent = recently added",
+        ),
+    ] = None,
+    featured: bool | None = None,
+    staff_pick: Annotated[bool | None, Query(alias="staffPick")] = None,
+    slugs: Annotated[str | None, Query(description="Comma-separated slugs")] = None,
+    limit: Annotated[int | None, Query(ge=1, le=200)] = None,
+):
+    filters = catalog.TitleFilters(
+        type=type,
+        genre=genre,
+        list_name=list_name,
+        featured=featured,
+        staff_pick=staff_pick,
+        slugs=[s for s in slugs.split(",") if s] if slugs is not None else None,
+        limit=limit,
+    )
+    return [catalog.title_out(t) for t in catalog.list_titles(db, filters)]
+
+
+@router.get("/titles/{slug}", response_model=TitleOut, **OPTS)
+def get_title(slug: str, db: DB):
+    t = catalog.get_title(db, slug)
+    if t is None:
+        raise HTTPException(404, "Title not found")
+    return catalog.title_out(t)
+
+
+@router.get("/titles/{slug}/related", response_model=list[TitleOut], **OPTS)
+def related(slug: str, db: DB, limit: Annotated[int, Query(ge=1, le=50)] = 12):
+    t = catalog.get_title(db, slug)
+    if t is None:
+        raise HTTPException(404, "Title not found")
+    return [catalog.title_out(x) for x in catalog.related_titles(db, t, limit)]
+
+
+@router.get("/search", response_model=list[TitleOut], **OPTS)
+def search(db: DB, q: Annotated[str, Query(max_length=100)] = ""):
+    return [catalog.title_out(t) for t in catalog.search_titles(db, q)]
+
+
+@router.get("/genres", response_model=list[str])
+def genres(db: DB, type: TitleType | None = None):
+    return catalog.list_genres(db, type)
+
+
+@router.get("/playback/{slug}", response_model=PlayableOut, **OPTS)
+def playback(slug: str, db: DB, ep: str | None = None):
+    p = catalog.playable(db, slug, ep)
+    if p is None:
+        raise HTTPException(404, "Nothing playable here")
+    return p

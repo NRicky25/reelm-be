@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.db import get_db
+from app.routers import catalog
 
 app = FastAPI(title="Reelm API", version="0.1.0")
 
@@ -18,6 +19,9 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+
+app.include_router(catalog.router)
 
 
 @app.get("/health", tags=["system"])
