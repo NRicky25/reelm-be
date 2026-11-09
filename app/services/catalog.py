@@ -1,35 +1,41 @@
 """Catalogue queries and the conversion from database rows to API shapes.
 
-The catalogue is small, so list filtering like "new episodes" happens in
-Python after one query. Move it into SQL if the catalogue grows large.
+Filtering (type, featured, staff pick, slugs, genre, search) happens in SQL.
+List endpoints return summaries (no episode lists); only the detail and
+playback endpoints load seasons and episodes.
 """
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 
-from sqlalchemy import or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy import Select, func, or_, select
+from sqlalchemy.orm import Session, lazyload
 
 from app.config import get_settings
-from app.models import Episode, Genre, Title, TitleGenre, TitleType
+from app.models import Episode, Genre, Season, Title, TitleGenre, TitleType, Video
 from app.schemas.catalog import (
     EpisodeOut,
+    LatestEpisodeOut,
     NextEpisodeOut,
     PlayableOut,
     SeasonOut,
     TitleOut,
+    TitleSummaryOut,
 )
-from app.services.video_url import playback_url
+from app.services.video_url import playable_clause, playback_url
 
-NEW_EPISODE_DAYS = 14
+NEW_EPISODE_DAYS = 14  # a show is "new" if its latest episode is this recent
+NEW_MOVIE_DAYS = 84  # a movie is "new" if it was added this recently
 
 
 def today() -> date:
-    return get_settings().catalog_today or date.today()
+    """Catalogue date: CATALOG_TODAY if pinned, else today's UTC date (same as the frontend)."""
+    return get_settings().catalog_today or datetime.now(UTC).date()
 
 
 def genre_slug(name: str) -> str:
-    return name.lower().replace(" ", "-")
+    return "-".join(name.lower().split())
 
 
 # ───────── conversion ─────────
@@ -39,35 +45,89 @@ def episode_out(ep: Episode) -> EpisodeOut:
     return out
 
 
-def title_out(t: Title) -> TitleOut:
-    out = TitleOut.model_validate(t)
+def summary_out(t: Title, latest: LatestEpisodeOut | None = None) -> TitleSummaryOut:
+    out = TitleSummaryOut.model_validate(t)
     out.video_url = playback_url(t.video)
-    if t.type == TitleType.movie:
-        out.seasons = None
-    else:
-        out.seasons = [
-            SeasonOut(number=s.number, episodes=[episode_out(e) for e in s.episodes])
-            for s in t.seasons
-        ]
+    out.latest_episode = latest
     return out
 
 
-# ───────── helpers ─────────
+def title_out(t: Title) -> TitleOut:
+    """Full title, including all seasons and episodes."""
+    on = today()
+    seasons = (
+        None
+        if t.type == TitleType.movie
+        else [
+            SeasonOut(number=s.number, episodes=[episode_out(e) for e in s.episodes])
+            for s in t.seasons
+        ]
+    )
+    latest = latest_available_episode(t, on)
+    latest_out = (
+        LatestEpisodeOut(
+            season=latest[0],
+            id=latest[1].id,
+            number=latest[1].number,
+            release_date=latest[1].release_date,
+        )
+        if latest
+        else None
+    )
+    base = summary_out(t, latest_out).model_dump()
+    return TitleOut(**base, seasons=seasons)
+
+
+# ───────── availability ─────────
 def is_available(ep: Episode, on: date) -> bool:
     """Released and has something to play."""
     return ep.release_date <= on and playback_url(ep.video) is not None
 
 
-def latest_available_episode(t: Title, on: date) -> Episode | None:
-    eps = [e for s in t.seasons for e in s.episodes if is_available(e, on)]
-    return max(eps, key=lambda e: e.release_date, default=None)
+def latest_available_episode(t: Title, on: date) -> tuple[int, Episode] | None:
+    """(season number, episode) of the newest playable episode; ties go to the later episode."""
+    best: tuple[int, Episode] | None = None
+    for s in t.seasons:
+        for e in s.episodes:
+            if is_available(e, on) and (
+                best is None or e.release_date >= best[1].release_date
+            ):
+                best = (s.number, e)
+    return best
 
 
-def _all_titles(db: Session, title_type: TitleType | None = None) -> list[Title]:
-    stmt = select(Title).order_by(Title.added_at.desc(), Title.name)
-    if title_type:
-        stmt = stmt.where(Title.type == title_type)
-    return list(db.scalars(stmt).unique())
+def latest_episodes(
+    db: Session, title_ids: Iterable[str], on: date
+) -> dict[str, LatestEpisodeOut]:
+    """Newest playable episode per title, in one query (no episode lists loaded)."""
+    ids = list(title_ids)
+    if not ids:
+        return {}
+    rows = db.execute(
+        select(
+            Season.title_id,
+            Season.number,
+            Episode.id,
+            Episode.number,
+            Episode.release_date,
+        )
+        .join(Episode, Episode.season_id == Season.id)
+        .join(Video, Episode.video_id == Video.id)
+        .where(Season.title_id.in_(ids), Episode.release_date <= on, playable_clause())
+        .order_by(Episode.release_date, Season.number, Episode.number)
+    ).all()
+    latest: dict[str, LatestEpisodeOut] = {}
+    for (
+        title_id,
+        season_no,
+        ep_id,
+        ep_no,
+        released,
+    ) in rows:  # ascending → last one wins
+        latest[title_id] = LatestEpisodeOut(
+            season=season_no, id=ep_id, number=ep_no, release_date=released
+        )
+    return latest
 
 
 # ───────── queries ─────────
@@ -82,94 +142,129 @@ class TitleFilters:
     limit: int | None = None
 
 
-LISTS = {"new", "recent", "az", "sub", "dub"}
+def _titles_query(*, with_seasons: bool = False) -> Select[tuple[Title]]:
+    stmt = select(Title).order_by(Title.added_at.desc(), Title.name)
+    if not with_seasons:
+        stmt = stmt.options(lazyload(Title.seasons))
+    return stmt
 
 
-def list_titles(db: Session, f: TitleFilters) -> list[Title]:
-    titles = _all_titles(db, f.type)
+def _genre_matches(genre: str):
+    g = genre.lower()
+    return Title.genre_links.any(
+        TitleGenre.genre.has(
+            or_(
+                func.lower(Genre.name) == g,
+                func.lower(func.replace(Genre.name, " ", "-")) == g,
+            )
+        )
+    )
 
+
+def list_titles(db: Session, f: TitleFilters) -> list[TitleSummaryOut]:
+    stmt = _titles_query()
+    if f.type:
+        stmt = stmt.where(Title.type == f.type)
     if f.slugs is not None:
-        wanted = set(f.slugs)
-        titles = [t for t in titles if t.slug in wanted]
+        stmt = stmt.where(Title.slug.in_(f.slugs))
     if f.featured is not None:
-        titles = [t for t in titles if t.featured == f.featured]
+        stmt = stmt.where(Title.featured == f.featured)
     if f.staff_pick is not None:
-        titles = [t for t in titles if t.staff_pick == f.staff_pick]
+        stmt = stmt.where(Title.staff_pick == f.staff_pick)
     if f.genre:
-        g = f.genre.lower()
-        titles = [
-            t for t in titles if any(g in (n.lower(), genre_slug(n)) for n in t.genres)
-        ]
-
-    if f.list_name == "new":
-        on = today()
-        if f.type == TitleType.movie:
-            titles = [
-                t
-                for t in titles
-                if t.added_at >= on - timedelta(days=NEW_EPISODE_DAYS * 6)
-            ]
-        else:
-            fresh = []
-            for t in titles:
-                latest = latest_available_episode(t, on)
-                if latest and (on - latest.release_date).days <= NEW_EPISODE_DAYS:
-                    fresh.append((latest.release_date, t))
-            titles = [t for _, t in sorted(fresh, key=lambda x: x[0], reverse=True)]
-    elif f.list_name == "az":
-        titles = sorted(titles, key=lambda t: t.name.lower())
+        stmt = stmt.where(_genre_matches(f.genre))
+    if f.list_name == "az":
+        stmt = stmt.order_by(None).order_by(func.lower(Title.name))
     elif f.list_name == "sub":
-        titles = [t for t in titles if t.sub]
+        stmt = stmt.where(Title.sub.is_(True))
     elif f.list_name == "dub":
-        titles = [t for t in titles if t.dub]
+        stmt = stmt.where(Title.dub.is_(True))
     # "recent" = default order (newest added first)
 
-    return titles[: f.limit] if f.limit else titles
+    titles = list(db.scalars(stmt).unique())
+    on = today()
+    latest = latest_episodes(
+        db, (t.id for t in titles if t.type != TitleType.movie), on
+    )
+
+    if f.list_name == "new":
+        fresh: list[tuple[date, Title]] = []
+        for t in titles:
+            if t.type == TitleType.movie:
+                if t.added_at >= on - timedelta(days=NEW_MOVIE_DAYS):
+                    fresh.append((t.added_at, t))
+            elif (le := latest.get(t.id)) and (
+                on - le.release_date
+            ).days <= NEW_EPISODE_DAYS:
+                fresh.append((le.release_date, t))
+        titles = [t for _, t in sorted(fresh, key=lambda x: x[0], reverse=True)]
+
+    if f.limit:
+        titles = titles[: f.limit]
+    return [summary_out(t, latest.get(t.id)) for t in titles]
 
 
 def get_title(db: Session, slug: str) -> Title | None:
-    return db.scalars(select(Title).where(Title.slug == slug)).unique().first()
+    return (
+        db.scalars(_titles_query(with_seasons=True).where(Title.slug == slug))
+        .unique()
+        .first()
+    )
 
 
-def related_titles(db: Session, title: Title, limit: int = 12) -> list[Title]:
+def related_titles(db: Session, title: Title, limit: int = 12) -> list[TitleSummaryOut]:
     """Titles sharing genres, most overlap first; same type breaks ties."""
     mine = set(title.genres)
-    scored = []
-    for t in _all_titles(db):
-        if t.id == title.id:
-            continue
-        shared = len(mine & set(t.genres))
-        if shared:
-            scored.append((shared + (0.5 if t.type == title.type else 0), t))
-    scored.sort(key=lambda x: x[0], reverse=True)
-    return [t for _, t in scored[:limit]]
+    candidates = db.scalars(
+        _titles_query().where(
+            Title.id != title.id,
+            Title.genre_links.any(TitleGenre.genre.has(Genre.name.in_(mine))),
+        )
+    ).unique()
+    scored = sorted(
+        (
+            (len(mine & set(t.genres)) + (0.5 if t.type == title.type else 0), t)
+            for t in candidates
+        ),
+        key=lambda x: x[0],
+        reverse=True,
+    )[:limit]
+    picked = [t for _, t in scored]
+    latest = latest_episodes(
+        db, (t.id for t in picked if t.type != TitleType.movie), today()
+    )
+    return [summary_out(t, latest.get(t.id)) for t in picked]
 
 
-def search_titles(db: Session, q: str, limit: int = 60) -> list[Title]:
+def search_titles(db: Session, q: str, limit: int = 60) -> list[TitleSummaryOut]:
     q = q.strip()
     if not q:
         return []
-    like = f"%{q.lower()}%"
-    stmt = (
-        select(Title)
-        .outerjoin(TitleGenre)
-        .outerjoin(Genre)
-        .where(or_(Title.name.ilike(like), Genre.name.ilike(like)))
+    stmt = _titles_query().where(
+        or_(
+            Title.name.icontains(q, autoescape=True),
+            Title.genre_links.any(
+                TitleGenre.genre.has(Genre.name.icontains(q, autoescape=True))
+            ),
+        )
     )
-    found = {t.id: t for t in db.scalars(stmt).unique()}.values()
     ql = q.lower()
-    return sorted(
-        found, key=lambda t: (not t.name.lower().startswith(ql), t.name.lower())
-    )[:limit]
+    found = sorted(
+        db.scalars(stmt).unique(),
+        key=lambda t: (not t.name.lower().startswith(ql), t.name.lower()),
+    )
+    found = found[:limit]
+    latest = latest_episodes(
+        db, (t.id for t in found if t.type != TitleType.movie), today()
+    )
+    return [summary_out(t, latest.get(t.id)) for t in found]
 
 
 def list_genres(db: Session, title_type: TitleType | None = None) -> list[str]:
-    stmt = (
-        select(Genre.name).join(TitleGenre).join(Title).distinct().order_by(Genre.name)
-    )
+    stmt = select(Genre.name).join(TitleGenre).join(Title).distinct()
     if title_type:
         stmt = stmt.where(Title.type == title_type)
-    return list(db.scalars(stmt))
+    return sorted(db.scalars(stmt), key=str.lower)
 
 
 def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | None:

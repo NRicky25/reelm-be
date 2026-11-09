@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models import TitleType
-from app.schemas.catalog import PlayableOut, TitleOut
+from app.schemas.catalog import PlayableOut, TitleOut, TitleSummaryOut
 from app.services import catalog
 
 router = APIRouter(tags=["catalogue"])
@@ -17,7 +17,7 @@ DB = Annotated[Session, Depends(get_db)]
 OPTS = {"response_model_exclude_none": True, "response_model_by_alias": True}
 
 
-@router.get("/titles", response_model=list[TitleOut], **OPTS)
+@router.get("/titles", response_model=list[TitleOut] | list[TitleSummaryOut], **OPTS)
 def list_titles(
     db: DB,
     type: TitleType | None = None,
@@ -35,7 +35,16 @@ def list_titles(
     staff_pick: Annotated[bool | None, Query(alias="staffPick")] = None,
     slugs: Annotated[str | None, Query(description="Comma-separated slugs")] = None,
     limit: Annotated[int | None, Query(ge=1, le=200)] = None,
+    full: Annotated[
+        bool,
+        Query(
+            description="Include seasons + episodes. Only allowed together with `slugs`."
+        ),
+    ] = False,
 ):
+    """Title summaries (no episode lists). Use /titles/{slug} for one full title."""
+    if full and slugs is None:
+        raise HTTPException(422, "`full=true` requires `slugs`")
     filters = catalog.TitleFilters(
         type=type,
         genre=genre,
@@ -45,7 +54,12 @@ def list_titles(
         slugs=[s for s in slugs.split(",") if s] if slugs is not None else None,
         limit=limit,
     )
-    return [catalog.title_out(t) for t in catalog.list_titles(db, filters)]
+    summaries = catalog.list_titles(db, filters)
+    if not full:
+        return summaries
+    return [
+        catalog.title_out(t) for s in summaries if (t := catalog.get_title(db, s.slug))
+    ]
 
 
 @router.get("/titles/{slug}", response_model=TitleOut, **OPTS)
@@ -56,17 +70,17 @@ def get_title(slug: str, db: DB):
     return catalog.title_out(t)
 
 
-@router.get("/titles/{slug}/related", response_model=list[TitleOut], **OPTS)
+@router.get("/titles/{slug}/related", response_model=list[TitleSummaryOut], **OPTS)
 def related(slug: str, db: DB, limit: Annotated[int, Query(ge=1, le=50)] = 12):
     t = catalog.get_title(db, slug)
     if t is None:
         raise HTTPException(404, "Title not found")
-    return [catalog.title_out(x) for x in catalog.related_titles(db, t, limit)]
+    return catalog.related_titles(db, t, limit)
 
 
-@router.get("/search", response_model=list[TitleOut], **OPTS)
+@router.get("/search", response_model=list[TitleSummaryOut], **OPTS)
 def search(db: DB, q: Annotated[str, Query(max_length=100)] = ""):
-    return [catalog.title_out(t) for t in catalog.search_titles(db, q)]
+    return catalog.search_titles(db, q)
 
 
 @router.get("/genres", response_model=list[str])

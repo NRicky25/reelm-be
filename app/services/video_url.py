@@ -1,7 +1,9 @@
-"""The ONE place that turns a stored Video into a playable URL.
+"""The ONE place that decides whether a stored Video is playable and builds its URL.
 
-Switching video hosts later (e.g. Mux -> Bunny) only changes this function.
+Switching video hosts later (e.g. Mux -> Bunny) only changes this file.
 """
+
+from sqlalchemy import ColumnElement, and_, or_
 
 from app.models import Video, VideoProvider, VideoStatus
 
@@ -19,3 +21,19 @@ def playback_url(video: Video | None) -> str | None:
     ):
         return f"https://stream.mux.com/{video.playback_id}.m3u8"
     return None
+
+
+def playable_clause() -> ColumnElement[bool]:
+    """SQL version of `playback_url(v) is not None`, for filtering in queries."""
+    return or_(
+        and_(
+            Video.provider == VideoProvider.external,
+            Video.url.is_not(None),
+            Video.url != "",
+        ),
+        and_(
+            Video.provider == VideoProvider.mux,
+            Video.status == VideoStatus.ready,
+            Video.playback_id.is_not(None),
+        ),
+    )

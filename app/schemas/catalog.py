@@ -6,7 +6,7 @@ response_model_exclude_none), matching the frontend's optional `?:` fields.
 
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from app.models import TitleType
@@ -37,7 +37,18 @@ class SeasonOut(CamelModel):
     episodes: list[EpisodeOut]
 
 
-class TitleOut(CamelModel):
+class LatestEpisodeOut(CamelModel):
+    """Newest playable episode, for NEW badges in lists (no full episode list needed)."""
+
+    season: int
+    id: str
+    number: int
+    release_date: date
+
+
+class TitleSummaryOut(CamelModel):
+    """A title without its seasons/episodes: used by list endpoints."""
+
     id: str
     slug: str
     type: TitleType
@@ -58,13 +69,19 @@ class TitleOut(CamelModel):
     staff_pick: bool
     added_at: date
     studio: str
-    cast: list[str] = Field(validation_alias="cast_members")
+    cast: list[str] = Field(validation_alias=AliasChoices("cast_members", "cast"))
     # Movies only
     duration_sec: int | None = None
     video_url: str | None = None
     intro_start_sec: int | None = None
     intro_end_sec: int | None = None
     # Anime & series only
+    latest_episode: LatestEpisodeOut | None = None
+
+
+class TitleOut(TitleSummaryOut):
+    """A title with all seasons and episodes: detail and playback endpoints."""
+
     seasons: list[SeasonOut] | None = None
 
 

@@ -92,18 +92,81 @@ def test_new_episodes_are_recent_and_sorted(client):
     new = client.get("/titles", params={"type": "anime", "list": "new"}).json()
     assert new
     on = date(2026, 11, 8)
-    latest = []
-    for t in new:
-        eps = [
-            e
-            for s in t["seasons"]
-            for e in s["episodes"]
-            if e.get("videoUrl") and date.fromisoformat(e["releaseDate"]) <= on
-        ]
-        newest = max(date.fromisoformat(e["releaseDate"]) for e in eps)
-        assert (on - newest).days <= 14
-        latest.append(newest)
+    latest = [date.fromisoformat(t["latestEpisode"]["releaseDate"]) for t in new]
+    assert all((on - d).days <= 14 for d in latest)
     assert latest == sorted(latest, reverse=True)
+
+
+def test_latest_episode_in_list_matches_detail(client):
+    summary = client.get("/titles", params={"slugs": "echoes-of-the-starfall"}).json()[
+        0
+    ]
+    detail = client.get("/titles/echoes-of-the-starfall").json()
+    on = date(2026, 11, 8)
+    playable = [
+        (e["releaseDate"], s["number"], e["number"], e["id"])
+        for s in detail["seasons"]
+        for e in s["episodes"]
+        if e.get("videoUrl") and date.fromisoformat(e["releaseDate"]) <= on
+    ]
+    newest = max(playable)
+    assert summary["latestEpisode"] == {
+        "season": newest[1], "number": newest[2], "id": newest[3], "releaseDate": newest[0],
+    }  # fmt: skip
+    assert detail["latestEpisode"] == summary["latestEpisode"]
+
+
+def test_lists_are_summaries_without_episodes(client):
+    for path, params in [
+        ("/titles", {}),
+        ("/search", {"q": "star"}),
+        ("/titles/echoes-of-the-starfall/related", {}),
+    ]:
+        items = client.get(path, params=params).json()
+        assert items and all("seasons" not in t for t in items), path
+
+
+def test_full_titles_by_slug(client):
+    full = client.get(
+        "/titles",
+        params={
+            "slugs": "echoes-of-the-starfall,the-last-lighthouse,nope",
+            "full": "true",
+        },
+    ).json()
+    by_slug = {t["slug"]: t for t in full}
+    assert set(by_slug) == {
+        "echoes-of-the-starfall",
+        "the-last-lighthouse",
+    }  # unknown slug ignored
+    assert len(by_slug["echoes-of-the-starfall"]["seasons"]) == 2
+    assert "seasons" not in by_slug["the-last-lighthouse"]
+    assert client.get("/titles", params={"full": "true"}).status_code == 422
+
+
+def test_new_movies_and_mixed_types(client):
+    movies = client.get("/titles", params={"type": "movie", "list": "new"}).json()
+    added = [date.fromisoformat(t["addedAt"]) for t in movies]
+    assert movies and all((date(2026, 11, 8) - d).days <= 84 for d in added)
+    assert added == sorted(added, reverse=True)
+    mixed = client.get("/titles", params={"list": "new"}).json()
+    assert {t["type"] for t in mixed} >= {"anime", "movie"}  # movies aren't dropped
+
+
+def test_limit_applies_after_list(client):
+    top3 = client.get(
+        "/titles", params={"type": "anime", "list": "new", "limit": 3}
+    ).json()
+    everything = client.get("/titles", params={"type": "anime", "list": "new"}).json()
+    assert [t["slug"] for t in top3] == [t["slug"] for t in everything][:3]
+
+
+def test_search_treats_wildcards_literally(client):
+    assert client.get("/search", params={"q": "%"}).json() == []
+    assert client.get("/search", params={"q": "_"}).json() == []
+    assert [
+        t["slug"] for t in client.get("/search", params={"q": "Cinder & Salt"}).json()
+    ] == ["cinder-and-salt"]
 
 
 def test_related_shares_a_genre(client):
