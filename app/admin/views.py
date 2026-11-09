@@ -2,17 +2,34 @@
 
 List-type columns (languages, cast, colors) and a title's genres are edited as
 simple comma-separated text instead of raw JSON / link tables.
+
+Errors raised as ValueError in the hooks below are shown to the admin as a
+message on the form (or the list page, for deletes).
 """
 
 import re
-from typing import Any, ClassVar
+from collections.abc import Callable
+from typing import Any, ClassVar, TypeVar
 
+import anyio
 from sqladmin import ModelView
-from sqlalchemy import select
+from sqlalchemy import delete, exists, select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 from starlette.requests import Request
 from wtforms import Form, StringField, validators
 
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
+
+T = TypeVar("T")
+HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
+DEFAULT_COLORS = ["#3a3a4a", "#22222b"]
+GENRE_NAME_MAX = 60  # matches Genre.name length
+
+OPTIONAL_SECONDS = [
+    validators.Optional(),
+    validators.NumberRange(min=0, message="Can't be negative."),
+]
 
 
 def split_csv(value: str | None) -> list[str]:
@@ -21,6 +38,32 @@ def split_csv(value: str | None) -> list[str]:
 
 def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def check_intro(data: dict) -> None:
+    start, end = data.get("intro_start_sec"), data.get("intro_end_sec")
+    if start == 0 and end == 0:  # "no intro" (as in the demo data)
+        data["intro_start_sec"] = data["intro_end_sec"] = None
+        return
+    if (start is None) != (end is None):
+        raise ValueError("Set both intro start and intro end, or neither.")
+    if start is not None and end <= start:
+        raise ValueError("Intro end must be after intro start.")
+
+
+class BaseAdmin(ModelView):
+    """Shared settings: no CSV/JSON export (nothing needs it; it makes bulk copying easy)."""
+
+    can_export = False
+
+    async def in_thread(self, fn: Callable[[Session], T]) -> T:
+        """Run blocking database work in a worker thread with its own session."""
+
+        def run() -> T:
+            with self.session_maker() as session:
+                return fn(session)
+
+        return await anyio.to_thread.run_sync(run)
 
 
 class CsvFieldsMixin:
@@ -45,27 +88,72 @@ class CsvFieldsMixin:
     async def get_form_data_for_edit(self, obj: Any) -> dict[str, Any]:
         data = await super().get_form_data_for_edit(obj)  # type: ignore[misc]
         for name, (_label, _help, attr) in self.csv_fields.items():
-            data[name] = ", ".join(self.csv_value(obj, attr))
+            data[name] = ", ".join(getattr(obj, attr) or [])
         return data
-
-    def csv_value(self, obj: Any, attr: str) -> list[str]:
-        return list(getattr(obj, attr) or [])
 
     async def on_model_change(
         self, data: dict, model: Any, is_created: bool, request: Request
     ) -> None:
-        await super().on_model_change(data, model, is_created, request)  # type: ignore[misc]
+        values: dict[str, list[str]] = {}
         for name, (_label, _help, attr) in self.csv_fields.items():
-            if name in data:
-                self.set_csv_value(model, attr, split_csv(data.pop(name)), request)
+            raw = data.pop(name, None)
+            if (
+                raw is not None
+            ):  # a field missing from the request leaves the value alone
+                values[attr] = split_csv(raw)
+        await super().on_model_change(data, model, is_created, request)  # type: ignore[misc]
+        for attr, items in values.items():
+            await self.set_csv_value(model, attr, items)
 
-    def set_csv_value(
-        self, model: Any, attr: str, values: list[str], request: Request
-    ) -> None:
+    async def set_csv_value(self, model: Any, attr: str, values: list[str]) -> None:
         setattr(model, attr, values)
 
 
-class TitleAdmin(CsvFieldsMixin, ModelView, model=Title):
+def _video_ids_of_titles(session: Session, title_ids: list[str]) -> list[str]:
+    movie = session.scalars(select(Title.video_id).where(Title.id.in_(title_ids))).all()
+    episodes = session.scalars(
+        select(Episode.video_id).join(Season).where(Season.title_id.in_(title_ids))
+    ).all()
+    return [v for v in (*movie, *episodes) if v]
+
+
+def _delete_videos(session: Session, video_ids: list[str]) -> None:
+    if video_ids:
+        session.execute(delete(Video).where(Video.id.in_(video_ids)))
+        session.commit()
+
+
+class DeletesOwnVideosMixin:
+    """Each episode/movie owns its video, so deleting it deletes the video too."""
+
+    def video_ids_for(self, session: Session, model: Any) -> list[str]:
+        raise NotImplementedError
+
+    async def on_model_delete(self, model: Any, request: Request) -> None:
+        await super().on_model_delete(model, request)  # type: ignore[misc]
+        ids = await self.in_thread(lambda s: self.video_ids_for(s, model))  # type: ignore[attr-defined]
+        request.state.videos_to_delete = ids
+
+    async def after_model_delete(self, model: Any, request: Request) -> None:
+        ids = getattr(request.state, "videos_to_delete", [])
+        await self.in_thread(lambda s: _delete_videos(s, ids))  # type: ignore[attr-defined]
+        await super().after_model_delete(model, request)  # type: ignore[misc]
+
+
+# Only offer videos that nothing else uses yet (each video belongs to one episode/movie).
+UNUSED_VIDEO = [
+    ~exists().where(Episode.video_id == Video.id),
+    ~exists().where(Title.video_id == Video.id),
+]
+VIDEO_AJAX = {
+    "fields": ("url", "playback_id"),
+    "order_by": "created_at",
+    "limit": 20,
+    "where": UNUSED_VIDEO,
+}
+
+
+class TitleAdmin(DeletesOwnVideosMixin, CsvFieldsMixin, BaseAdmin, model=Title):
     name = "Title"
     name_plural = "Titles"
     icon = "fa-solid fa-film"
@@ -110,30 +198,34 @@ class TitleAdmin(CsvFieldsMixin, ModelView, model=Title):
             "description": "Used in the URL (/title/<slug>). Leave empty to make one from the name.",
             "validators": [validators.Optional()],
         },
+        "year": {"validators": [validators.NumberRange(min=1880, max=2100)]},
         "sub": {"description": "Anime only: a subtitled version exists."},
         "dub": {"description": "Anime only: a dubbed version exists."},
         "poster_url": {
             "description": "Image URL or path, e.g. /images/stills/forest-bow.jpg"
         },
         "poster_focus_x": {
-            "description": "0–100: where to centre when cropping a wide image into a tall poster."
+            "description": "0–100: where to centre when cropping a wide image into a tall poster.",
+            "validators": [
+                validators.Optional(),
+                validators.NumberRange(min=0, max=100),
+            ],
         },
-        "duration_sec": {"description": "Movies only (seconds)."},
+        "duration_sec": {
+            "description": "Movies only (seconds).",
+            "validators": OPTIONAL_SECONDS,
+        },
         "intro_start_sec": {
-            "description": "Movies only: where the intro starts (seconds)."
+            "description": "Movies only: where the intro starts (seconds).",
+            "validators": OPTIONAL_SECONDS,
         },
         "intro_end_sec": {
-            "description": "Movies only: where the intro ends (seconds)."
+            "description": "Movies only: where the intro ends (seconds).",
+            "validators": OPTIONAL_SECONDS,
         },
         "video": {"description": "Movies only. Shows use the video on each episode."},
     }
-    form_ajax_refs: ClassVar = {
-        "video": {
-            "fields": ("url", "playback_id"),
-            "order_by": "created_at",
-            "page_size": 20,
-        }
-    }
+    form_ajax_refs: ClassVar = {"video": VIDEO_AJAX}
     csv_fields: ClassVar = {
         "genres_csv": (
             "Genres",
@@ -153,7 +245,7 @@ class TitleAdmin(CsvFieldsMixin, ModelView, model=Title):
         "cast_csv": ("Cast", "Comma-separated names", "cast_members"),
         "colors_csv": (
             "Placeholder colours",
-            "Two hex colours used when there's no image, e.g. #5a4a7a, #2a2b40",
+            "Two hex colours used when there's no image, e.g. #5a4a7a, #2a2b40. Empty = default.",
             "colors",
         ),
     }
@@ -161,49 +253,75 @@ class TitleAdmin(CsvFieldsMixin, ModelView, model=Title):
     async def on_model_change(
         self, data: dict, model: Title, is_created: bool, request: Request
     ) -> None:
-        if not (data.get("slug") or "").strip():
-            data["slug"] = slugify(data.get("name") or "")
+        check_intro(data)
+        slug = slugify(data.get("slug") or "") or slugify(data.get("name") or "")
+        if not slug:
+            raise ValueError(
+                "Couldn't make a URL slug from this name. Please type one (letters, numbers, dashes)."
+            )
+        taken = await self.in_thread(
+            lambda s: s.scalar(
+                select(Title.id).where(Title.slug == slug, Title.id != model.id)
+            )
+        )
+        if taken:
+            raise ValueError(
+                f"The slug “{slug}” is already used by another title. Please choose another."
+            )
+        data["slug"] = slug
         await super().on_model_change(data, model, is_created, request)
 
-    def set_csv_value(
-        self, model: Any, attr: str, values: list[str], request: Request
-    ) -> None:
+    async def set_csv_value(self, model: Any, attr: str, values: list[str]) -> None:
+        if attr == "colors":
+            if not values:
+                values = list(DEFAULT_COLORS)
+            elif len(values) != 2 or not all(HEX_COLOR.match(v) for v in values):
+                raise ValueError(
+                    "Placeholder colours must be two hex colours, e.g. #5a4a7a, #2a2b40."
+                )
         if attr == "genres":
-            # Genre links need a database session and the saved title id, so
-            # they're applied in after_model_change.
-            request.state.pending_genres = values
+            names = list(dict.fromkeys(values))  # keep order, drop duplicates
+            if any(len(n) > GENRE_NAME_MAX for n in names):
+                raise ValueError(
+                    f"Genre names can be at most {GENRE_NAME_MAX} characters."
+                )
+            ids = await self._genre_ids(names)
+            # Same transaction as the title: saved together or not at all.
+            model.genre_links = [
+                TitleGenre(genre_id=gid, position=i) for i, gid in enumerate(ids)
+            ]
             return
-        super().set_csv_value(model, attr, values, request)
+        await super().set_csv_value(model, attr, values)
 
-    async def after_model_change(
-        self, data: dict, model: Title, is_created: bool, request: Request
-    ):
-        names = getattr(request.state, "pending_genres", None)
-        if names is not None:
-            del request.state.pending_genres
-            self._save_genres(model.id, names)
-        return await super().after_model_change(data, model, is_created, request)
+    async def _genre_ids(self, names: list[str]) -> list[int]:
+        """IDs for these genre names, creating missing genres (an unused genre is harmless)."""
 
-    def _save_genres(self, title_id: str, names: list[str]) -> None:
-        unique = list(dict.fromkeys(names))  # keep order, drop duplicates
-        with self.session_maker() as session:
-            title = session.get(Title, title_id)
-            existing = {g.name.lower(): g for g in session.scalars(select(Genre))}
-            # Remove old links first: new ones may reuse the same (title, genre) keys.
-            title.genre_links.clear()
-            session.flush()
-            for i, name in enumerate(unique):
-                genre = existing.get(name.lower())
-                if genre is None:
-                    genre = existing[name.lower()] = Genre(name=name)
-                    session.add(genre)
-                link = TitleGenre(position=i)
-                title.genre_links.append(link)  # in the session via the title first...
-                link.genre = genre  # ...then linked to its genre
-            session.commit()
+        def resolve(session: Session) -> list[int]:
+            for attempt in range(2):
+                existing = {g.name.lower(): g for g in session.scalars(select(Genre))}
+                for name in names:
+                    if name.lower() not in existing:
+                        existing[name.lower()] = Genre(name=name)
+                        session.add(existing[name.lower()])
+                try:
+                    session.commit()
+                except (
+                    IntegrityError
+                ):  # someone created the same genre at the same moment
+                    session.rollback()
+                    if attempt:
+                        raise
+                    continue
+                return [existing[n.lower()].id for n in names]
+            raise AssertionError("unreachable")
+
+        return await self.in_thread(resolve)
+
+    def video_ids_for(self, session: Session, model: Title) -> list[str]:
+        return _video_ids_of_titles(session, [model.id])
 
 
-class SeasonAdmin(ModelView, model=Season):
+class SeasonAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Season):
     name = "Season"
     name_plural = "Seasons"
     icon = "fa-solid fa-layer-group"
@@ -212,12 +330,22 @@ class SeasonAdmin(ModelView, model=Season):
     column_list = [Season.title, Season.number]
     column_sortable_list = [Season.number]
     form_columns = [Season.title, Season.number]
+    form_args: ClassVar = {"number": {"validators": [validators.NumberRange(min=1)]}}
     form_ajax_refs: ClassVar = {
         "title": {"fields": ("name", "slug"), "order_by": "name"}
     }
 
+    def video_ids_for(self, session: Session, model: Season) -> list[str]:
+        return [
+            v
+            for v in session.scalars(
+                select(Episode.video_id).where(Episode.season_id == model.id)
+            )
+            if v
+        ]
 
-class EpisodeAdmin(ModelView, model=Episode):
+
+class EpisodeAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Episode):
     name = "Episode"
     name_plural = "Episodes"
     icon = "fa-solid fa-tv"
@@ -247,24 +375,35 @@ class EpisodeAdmin(ModelView, model=Episode):
         Episode.video,
     ]
     form_args: ClassVar = {
+        "number": {"validators": [validators.NumberRange(min=1)]},
         "release_date": {
             "description": "Before this date the episode shows as 'coming soon'."
         },
-        "duration_sec": {"description": "Length in seconds (e.g. 1440 = 24 min)."},
-        "intro_start_sec": {"description": "Seconds; enables the Skip Intro button."},
-        "intro_end_sec": {"description": "Seconds."},
+        "duration_sec": {
+            "description": "Length in seconds (e.g. 1440 = 24 min).",
+            "validators": [validators.NumberRange(min=0, message="Can't be negative.")],
+        },
+        "intro_start_sec": {
+            "description": "Seconds; enables the Skip Intro button.",
+            "validators": OPTIONAL_SECONDS,
+        },
+        "intro_end_sec": {"description": "Seconds.", "validators": OPTIONAL_SECONDS},
         "video": {"description": "Without a video the episode can't be played."},
     }
-    form_ajax_refs: ClassVar = {
-        "video": {
-            "fields": ("url", "playback_id"),
-            "order_by": "created_at",
-            "page_size": 20,
-        },
-    }
+    form_ajax_refs: ClassVar = {"video": VIDEO_AJAX}
+
+    async def on_model_change(
+        self, data: dict, model: Episode, is_created: bool, request: Request
+    ) -> None:
+        check_intro(data)
+        await super().on_model_change(data, model, is_created, request)
+
+    def video_ids_for(self, session: Session, model: Episode) -> list[str]:
+        vid = session.scalar(select(Episode.video_id).where(Episode.id == model.id))
+        return [vid] if vid else []
 
 
-class GenreAdmin(ModelView, model=Genre):
+class GenreAdmin(BaseAdmin, model=Genre):
     name = "Genre"
     name_plural = "Genres"
     icon = "fa-solid fa-tags"
@@ -276,7 +415,7 @@ class GenreAdmin(ModelView, model=Genre):
     form_columns = [Genre.name]
 
 
-class VideoAdmin(ModelView, model=Video):
+class VideoAdmin(BaseAdmin, model=Video):
     name = "Video"
     name_plural = "Videos"
     icon = "fa-solid fa-circle-play"
@@ -305,7 +444,23 @@ class VideoAdmin(ModelView, model=Video):
         "playback_id": {
             "description": "Mux videos: filled in automatically after upload."
         },
+        "duration_sec": {"validators": OPTIONAL_SECONDS},
     }
+
+    async def on_model_delete(self, model: Video, request: Request) -> None:
+        in_use = await self.in_thread(
+            lambda s: s.scalar(
+                select(
+                    exists().where(Episode.video_id == model.id)
+                    | exists().where(Title.video_id == model.id)
+                )
+            )
+        )
+        if in_use:
+            raise ValueError(
+                "This video is used by an episode or movie. Remove it there first."
+            )
+        await super().on_model_delete(model, request)
 
 
 ALL_VIEWS = [TitleAdmin, SeasonAdmin, EpisodeAdmin, GenreAdmin, VideoAdmin]

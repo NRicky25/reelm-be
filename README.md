@@ -42,8 +42,12 @@ tests/                 pytest (in-memory SQLite)
 
 ## Admin panel
 
-`http://localhost:8000/admin`. It's **off until `ADMIN_PASSWORD` is set** in `.env` (username `admin`
-by default). Manage titles, seasons, episodes, genres and videos there.
+`http://localhost:8000/admin`. It's **off until `ADMIN_PASSWORD` is set** in `.env` (at least 12
+characters; username `admin` by default). Manage titles, seasons, episodes, genres and videos there.
+
+- After 10 wrong passwords from one address, logins from it are refused for 15 minutes.
+- Changing `ADMIN_PASSWORD` logs out existing sessions.
+- Deleting a title / season / episode also deletes its videos; a video in use can't be deleted.
 
 - Genres, languages, cast and placeholder colours are typed as comma-separated text.
 - Leave a title's slug empty to generate it from the name.

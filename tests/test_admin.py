@@ -23,7 +23,9 @@ def admin_client(db: Session, monkeypatch) -> Iterator[TestClient]:
 
     monkeypatch.setattr(auth_module.asyncio, "sleep", no_wait)
     api = FastAPI()
-    settings = Settings(admin_password=PASSWORD, admin_secret_key="k" * 32)
+    settings = Settings(
+        _env_file=None, admin_password=PASSWORD, admin_secret_key="k" * 32
+    )
     setup_admin(api, db.get_bind(), settings)
     with TestClient(api, base_url="http://testserver") as c:
         yield c
@@ -39,7 +41,10 @@ def login(client: TestClient, password: str = PASSWORD):
 
 def test_admin_is_off_without_password(db):
     api = FastAPI()
-    assert setup_admin(api, db.get_bind(), Settings(admin_password=None)) is None
+    assert (
+        setup_admin(api, db.get_bind(), Settings(_env_file=None, admin_password=None))
+        is None
+    )
     assert TestClient(api).get("/admin/").status_code == 404
 
 
@@ -50,9 +55,7 @@ def test_admin_requires_login(admin_client):
 
 def test_wrong_password_is_rejected(admin_client):
     r = login(admin_client, "nope")
-    assert r.status_code == 400 or "/admin/login" in r.headers.get(
-        "location", "/admin/login"
-    )
+    assert r.status_code == 400
     assert admin_client.get(
         "/admin/title/list", follow_redirects=False
     ).status_code in (302, 303)
