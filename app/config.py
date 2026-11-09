@@ -43,6 +43,16 @@ class Settings(BaseSettings):
     # Webhooks > signing secret. Optional locally: the upload page also polls Mux.
     mux_webhook_secret: SecretStr | None = None
 
+    # Supabase Storage for images (Project Settings > API). The service-role /
+    # secret key has full access: keep it in this backend only, never in reelm-fe.
+    supabase_url: str | None = None
+    supabase_service_role_key: SecretStr | None = None
+    supabase_bucket: str = "images"
+
+    @property
+    def storage_enabled(self) -> bool:
+        return bool(self.supabase_url and self.supabase_service_role_key)
+
     @property
     def mux_enabled(self) -> bool:
         return bool(self.mux_token_id and self.mux_token_secret)

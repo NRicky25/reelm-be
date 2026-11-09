@@ -17,7 +17,8 @@ API docs: http://localhost:8000/docs
 ## Checks
 
 ```bash
-uv run pytest
+uv run pytest                                   # in-memory SQLite (seconds)
+TEST_DATABASE_URL="postgresql://..." uv run pytest   # same tests on Postgres, in a throwaway reelm_test schema
 uv run ruff check . && uv run ruff format --check .
 ```
 
@@ -55,17 +56,33 @@ characters; username `admin` by default). Manage titles, seasons, episodes, genr
 - The frontend caches API responses for up to 60 s, so edits can take a minute to appear.
 - Before deploying: set `ADMIN_SECRET_KEY`, use a strong password and `ADMIN_COOKIE_SECURE=true`.
 
-## Database
+## Database (Supabase Postgres)
 
-Defaults to a `reelm.db` SQLite file in this folder. To use Supabase:
+Defaults to a local `reelm.db` SQLite file. To use Supabase:
 
-1. In Supabase: **Connect → Session pooler** (port 5432) and copy the connection string.
-2. Put it in `.env` as `DATABASE_URL=...`. `postgres://` / `postgresql://` URLs are switched to
-   the psycopg 3 driver automatically. (The transaction pooler on port 6543 also works.)
-3. Run `uv run alembic upgrade head` and `uv run python -m scripts.seed`.
+1. Supabase → **Connect** → Connection String → URI → **Session pooler**. Put it in `.env` as
+   `DATABASE_URL=...` with your password in place of `[YOUR-PASSWORD]` (encode `@` as `%40`, `#` as `%23`).
+2. `uv run alembic upgrade head` then `uv run python -m scripts.seed`.
 
-Lists use JSON on SQLite and JSONB on Postgres. SQLite runs with foreign keys ON so deletes behave
-the same as on Postgres. Every episode / movie has its own `videos` row.
+- **Row Level Security** is enabled on every table (migration `f263661d9129`). Supabase's public REST API can't
+  read or write them; the backend connects as the owner and isn't affected. **New tables need RLS too.**
+- Lists use JSON on SQLite and JSONB on Postgres. SQLite runs with foreign keys ON (but OFF during migrations,
+  because SQLite rebuilds tables to alter them). Every episode / movie has its own `videos` row.
+- Latency: every page needs a few database round trips, so host the backend in the **same region** as the
+  database (this project: `ap-south-1`).
+
+## Images (Supabase Storage)
+
+Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API keys: the **secret / service_role**
+key; it never goes in the frontend). Images live in a public bucket `images` (created automatically):
+
+- `uv run python -m scripts.upload_stills` uploads the demo stills (`stills/`) and points the catalogue at them.
+  Run it again after `scripts.seed --reset`.
+- In the admin, titles have **Upload poster / Upload backdrop** and episodes **Upload thumbnail**. JPEG, PNG or
+  WebP up to 8 MB (checked by content, not file name). Replacing an image deletes the old upload, except the
+  shared demo stills.
+- Uploaded files get unique names and are cached by Supabase's CDN, so a deleted image can stay reachable at its
+  old URL until the cache expires.
 
 ## Uploading videos (Mux)
 

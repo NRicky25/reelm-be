@@ -17,11 +17,12 @@ from sqlalchemy import exists, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from starlette.requests import Request
-from wtforms import Form, StringField, validators
+from wtforms import FileField, Form, StringField, validators
 
 from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
 from app.services.mux import MuxClient
+from app.services.storage import StorageError, SupabaseStorage
 from app.services.video_sync import delete_videos_everywhere, remove_from_mux
 
 T = TypeVar("T")
@@ -189,7 +190,103 @@ VIDEO_AJAX = {
 }
 
 
-class TitleAdmin(DeletesOwnVideosMixin, CsvFieldsMixin, BaseAdmin, model=Title):
+class ImageUploadMixin:
+    """Adds "Upload …" file fields that send images to Supabase Storage.
+
+    `image_fields` maps a form field to (label, model URL attribute, storage folder).
+    The URL fields stay editable too (paste a link instead of uploading).
+    A replaced image is deleted after the save succeeds, unless it's one of the
+    shared demo stills (several titles use the same still).
+    """
+
+    image_fields: ClassVar[dict[str, tuple[str, str, str]]] = {}
+    SHARED_FOLDERS: ClassVar[tuple[str, ...]] = ("stills/",)
+
+    async def scaffold_form(self, rules: list[str] | None = None) -> type[Form]:
+        base = await super().scaffold_form(rules)  # type: ignore[misc]
+        extra = {
+            name: FileField(
+                label,
+                description="JPEG, PNG or WebP, up to 8 MB. Replaces the image above.",
+                render_kw={
+                    "class": "form-control",
+                    "accept": "image/jpeg,image/png,image/webp",
+                },
+            )
+            for name, (label, _attr, _folder) in self.image_fields.items()
+        }
+        return type(f"{base.__name__}WithImages", (base,), extra)
+
+    async def on_model_change(
+        self, data: dict, model: Any, is_created: bool, request: Request
+    ) -> None:
+        uploads: list[tuple[str, str, bytes]] = []
+        for name, (_label, attr, folder) in self.image_fields.items():
+            file = data.pop(name, None)
+            if file is not None and getattr(file, "filename", None):
+                content = await file.read()
+                if content:
+                    uploads.append((attr, folder, content))
+        await super().on_model_change(data, model, is_created, request)  # type: ignore[misc]
+        if not uploads:
+            return
+        if not (_settings and _settings.storage_enabled):
+            raise ValueError(
+                "Image uploads need SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env."
+            )
+
+        def upload_all() -> list[tuple[str, str]]:
+            storage = SupabaseStorage.from_settings(_settings)
+            try:
+                return [
+                    (attr, storage.upload(folder, content))
+                    for attr, folder, content in uploads
+                ]
+            finally:
+                storage.close()
+
+        try:
+            results = await anyio.to_thread.run_sync(upload_all)
+        except StorageError as e:
+            raise ValueError(str(e)) from e
+        replaced = []
+        for attr, url in results:
+            old = getattr(model, attr, None) if not is_created else None
+            replaced.append(old)
+            data[attr] = url  # SQLAdmin applies `data` to the model after this hook
+            setattr(model, attr, url)
+        request.state.replaced_images = [u for u in replaced if u]
+
+    async def after_model_change(
+        self, data: dict, model: Any, is_created: bool, request: Request
+    ):
+        old_urls = getattr(request.state, "replaced_images", [])
+        if old_urls and _settings and _settings.storage_enabled:
+
+            def delete_old() -> None:
+                storage = SupabaseStorage.from_settings(_settings)
+                try:
+                    paths = [storage.path_from_url(u) for u in old_urls]
+                    storage.delete(
+                        [
+                            p
+                            for p in paths
+                            if p and not p.startswith(self.SHARED_FOLDERS)
+                        ]
+                    )
+                finally:
+                    storage.close()
+
+            try:
+                await anyio.to_thread.run_sync(delete_old)
+            except StorageError:
+                pass  # an unused old image is harmless
+        return await super().after_model_change(data, model, is_created, request)  # type: ignore[misc]
+
+
+class TitleAdmin(
+    DeletesOwnVideosMixin, ImageUploadMixin, CsvFieldsMixin, BaseAdmin, model=Title
+):
     name = "Title"
     name_plural = "Titles"
     icon = "fa-solid fa-film"
@@ -262,6 +359,10 @@ class TitleAdmin(DeletesOwnVideosMixin, CsvFieldsMixin, BaseAdmin, model=Title):
         "video": {"description": "Movies only. Shows use the video on each episode."},
     }
     form_ajax_refs: ClassVar = {"video": VIDEO_AJAX}
+    image_fields: ClassVar = {
+        "poster_file": ("Upload poster", "poster_url", "posters"),
+        "backdrop_file": ("Upload backdrop", "backdrop_url", "backdrops"),
+    }
     csv_fields: ClassVar = {
         "genres_csv": (
             "Genres",
@@ -379,7 +480,7 @@ class SeasonAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Season):
         return [v for v in (*(v for _, v in episodes), *pending) if v]
 
 
-class EpisodeAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Episode):
+class EpisodeAdmin(DeletesOwnVideosMixin, ImageUploadMixin, BaseAdmin, model=Episode):
     name = "Episode"
     name_plural = "Episodes"
     icon = "fa-solid fa-tv"
@@ -423,6 +524,9 @@ class EpisodeAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Episode):
         },
         "intro_end_sec": {"description": "Seconds.", "validators": OPTIONAL_SECONDS},
         "video": {"description": "Without a video the episode can't be played."},
+    }
+    image_fields: ClassVar = {
+        "thumb_file": ("Upload thumbnail", "thumb_url", "thumbnails")
     }
     form_ajax_refs: ClassVar = {"video": VIDEO_AJAX}
 
