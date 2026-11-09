@@ -19,7 +19,7 @@ class Base(DeclarativeBase):
     pass
 
 
-def make_engine(url: str, **kwargs) -> Engine:
+def make_engine(url: str, *, enforce_foreign_keys: bool = True, **kwargs) -> Engine:
     parsed = make_url(url)
     connect_args: dict = {}
     if parsed.get_backend_name() == "sqlite":
@@ -30,7 +30,7 @@ def make_engine(url: str, **kwargs) -> Engine:
 
     engine = create_engine(url, connect_args=connect_args, pool_pre_ping=True, **kwargs)
 
-    if parsed.get_backend_name() == "sqlite":
+    if parsed.get_backend_name() == "sqlite" and enforce_foreign_keys:
         # SQLite ignores foreign keys unless asked, so ON DELETE CASCADE /
         # SET NULL wouldn't behave like they do on Postgres.
         @event.listens_for(engine, "connect")

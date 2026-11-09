@@ -29,7 +29,10 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    engine = make_engine(DATABASE_URL)
+    # SQLite changes a table by copying it and dropping the original. With
+    # foreign keys enforced, that DROP would fire ON DELETE SET NULL / CASCADE on
+    # every row pointing at the table (e.g. wipe every episode's video link).
+    engine = make_engine(DATABASE_URL, enforce_foreign_keys=False)
     with engine.connect() as connection:
         context.configure(
             connection=connection,
