@@ -1,0 +1,4775 @@
+[
+ {
+  "id": "t01",
+  "slug": "echoes-of-the-starfall",
+  "type": "anime",
+  "name": "Echoes of the Starfall",
+  "description": "A runaway pilot and a ghost living in her ship's AI race across a collapsing star system to stop a war that only the two of them remember.",
+  "year": 2026,
+  "genres": [
+   "Sci-Fi",
+   "Action",
+   "Drama"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a7a",
+   "#2a2b40"
+  ],
+  "featured": true,
+  "staffPick": true,
+  "addedAt": "2026-09-09",
+  "studio": "Lantern Works",
+  "cast": [
+   "Aiko Tanaka",
+   "Ren Mori",
+   "Sora Ishida"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "echoes-of-the-starfall-s1e1",
+      "number": 1,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/steel-city.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e2",
+      "number": 2,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e3",
+      "number": 3,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e4",
+      "number": 4,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e5",
+      "number": 5,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e6",
+      "number": 6,
+      "name": "Orbit of Ash",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e7",
+      "number": 7,
+      "name": "Lanterns Out",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e8",
+      "number": 8,
+      "name": "The Long Way Round",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e9",
+      "number": 9,
+      "name": "Salt and Silver",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e10",
+      "number": 10,
+      "name": "What the River Knew",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e11",
+      "number": 11,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s1e12",
+      "number": 12,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "echoes-of-the-starfall-s2e1",
+      "number": 1,
+      "name": "The Long Way Round",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-17",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e2",
+      "number": 2,
+      "name": "Salt and Silver",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-24",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e3",
+      "number": 3,
+      "name": "What the River Knew",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e4",
+      "number": 4,
+      "name": "First Light",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-08",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e5",
+      "number": 5,
+      "name": "A Door in the Fog",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-15",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e6",
+      "number": 6,
+      "name": "Low Tide",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-22",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/steel-city.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e7",
+      "number": 7,
+      "name": "Borrowed Time",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-29",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e8",
+      "number": 8,
+      "name": "The Glass Garden",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e9",
+      "number": 9,
+      "name": "Sparks",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e10",
+      "number": 10,
+      "name": "Homeward",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e11",
+      "number": 11,
+      "name": "The Last Bell",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "echoes-of-the-starfall-s2e12",
+      "number": 12,
+      "name": "The Runaway",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-03",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/steel-city.jpg",
+  "backdropUrl": "/images/stills/steel-city.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t02",
+  "slug": "skyward-ronin",
+  "type": "anime",
+  "name": "Skyward Ronin",
+  "description": "A masterless swordsman takes to the floating islands, hunting the sky-pirate who stole his name.",
+  "year": 2026,
+  "genres": [
+   "Action",
+   "Adventure",
+   "Fantasy"
+  ],
+  "ageRating": "16+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#4a3a6a",
+   "#232436"
+  ],
+  "addedAt": "2026-09-29",
+  "studio": "Studio Kumo",
+  "cast": [
+   "Kenji Arata",
+   "Yui Hoshino"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "skyward-ronin-s1e1",
+      "number": 1,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e2",
+      "number": 2,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e3",
+      "number": 3,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-03",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e4",
+      "number": 4,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-10",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e5",
+      "number": 5,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-17",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e6",
+      "number": 6,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-24",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e7",
+      "number": 7,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-31",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e8",
+      "number": 8,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e9",
+      "number": 9,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e10",
+      "number": 10,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e11",
+      "number": 11,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "skyward-ronin-s1e12",
+      "number": 12,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/above-clouds.jpg",
+  "backdropUrl": "/images/stills/above-clouds.jpg",
+  "posterFocusX": 42
+ },
+ {
+  "id": "t03",
+  "slug": "paper-kingdoms",
+  "type": "anime",
+  "name": "Paper Kingdoms",
+  "description": "Two rival origami artists discover that what they fold comes alive at midnight, and their creations have started a war.",
+  "year": 2025,
+  "genres": [
+   "Adventure",
+   "Fantasy",
+   "Comedy"
+  ],
+  "ageRating": "10+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#3a4a6a",
+   "#22283a"
+  ],
+  "staffPick": true,
+  "addedAt": "2026-08-10",
+  "studio": "Foldline",
+  "cast": [
+   "Mai Sato",
+   "Haru Kimura"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "paper-kingdoms-s1e1",
+      "number": 1,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e2",
+      "number": 2,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e3",
+      "number": 3,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e4",
+      "number": 4,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e5",
+      "number": 5,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e6",
+      "number": 6,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e7",
+      "number": 7,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e8",
+      "number": 8,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e9",
+      "number": 9,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e10",
+      "number": 10,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-08",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e11",
+      "number": 11,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-15",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s1e12",
+      "number": 12,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-22",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "paper-kingdoms-s2e1",
+      "number": 1,
+      "name": "Static Hearts",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e2",
+      "number": 2,
+      "name": "Drift Market",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e3",
+      "number": 3,
+      "name": "Paper Moons",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e4",
+      "number": 4,
+      "name": "Blackout Run",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e5",
+      "number": 5,
+      "name": "The Quiet Between Stars",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e6",
+      "number": 6,
+      "name": "Ghost Signal",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e7",
+      "number": 7,
+      "name": "Orbit of Ash",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e8",
+      "number": 8,
+      "name": "Lanterns Out",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e9",
+      "number": 9,
+      "name": "The Long Way Round",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e10",
+      "number": 10,
+      "name": "Salt and Silver",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e11",
+      "number": 11,
+      "name": "What the River Knew",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "paper-kingdoms-s2e12",
+      "number": 12,
+      "name": "First Light",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2027-01-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/rainbow-tornado.jpg",
+  "backdropUrl": "/images/stills/rainbow-tornado.jpg",
+  "posterFocusX": 45
+ },
+ {
+  "id": "t04",
+  "slug": "neon-teahouse",
+  "type": "anime",
+  "name": "Neon Teahouse",
+  "description": "In a rain-soaked city, a tiny teahouse serves one customer a night, and every cup holds a memory they lost.",
+  "year": 2026,
+  "genres": [
+   "Slice of Life",
+   "Fantasy",
+   "Drama"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#5a3a55",
+   "#2a2233"
+  ],
+  "addedAt": "2026-10-09",
+  "studio": "Lantern Works",
+  "cast": [
+   "Nana Ueda",
+   "Taro Fujii"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "neon-teahouse-s1e1",
+      "number": 1,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e2",
+      "number": 2,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e3",
+      "number": 3,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e4",
+      "number": 4,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e5",
+      "number": 5,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e6",
+      "number": 6,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e7",
+      "number": 7,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e8",
+      "number": 8,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e9",
+      "number": 9,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e10",
+      "number": 10,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e11",
+      "number": 11,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e12",
+      "number": 12,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "neon-teahouse-s1e13",
+      "number": 13,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/pink-caterpillar.jpg",
+  "backdropUrl": "/images/stills/pink-caterpillar.jpg",
+  "posterFocusX": 45
+ },
+ {
+  "id": "t05",
+  "slug": "hollow-tide",
+  "type": "anime",
+  "name": "Hollow Tide",
+  "description": "When the sea retreats overnight, a fishing village finds a sunken city, and a girl who claims she's been waiting there for 300 years.",
+  "year": 2026,
+  "genres": [
+   "Fantasy",
+   "Mystery"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#3a5a50",
+   "#20302c"
+  ],
+  "staffPick": true,
+  "addedAt": "2026-10-27",
+  "studio": "Tidewell",
+  "cast": [
+   "Rin Aoki",
+   "Kaito Nishi"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "hollow-tide-s1e1",
+      "number": 1,
+      "name": "What the River Knew",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e2",
+      "number": 2,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-03",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e3",
+      "number": 3,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-10",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e4",
+      "number": 4,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-17",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e5",
+      "number": 5,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-24",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e6",
+      "number": 6,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e7",
+      "number": 7,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-08",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e8",
+      "number": 8,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-15",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e9",
+      "number": 9,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-22",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e10",
+      "number": 10,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-29",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e11",
+      "number": 11,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2027-01-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "hollow-tide-s1e12",
+      "number": 12,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2027-01-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/deep-cave.jpg",
+  "backdropUrl": "/images/stills/deep-cave.jpg",
+  "posterFocusX": 65
+ },
+ {
+  "id": "t06",
+  "slug": "cinder-and-salt",
+  "type": "anime",
+  "name": "Cinder & Salt",
+  "description": "A disgraced alchemist and a fire spirit open a seaside restaurant. The food is magical. The debts are worse.",
+  "year": 2025,
+  "genres": [
+   "Drama",
+   "Comedy",
+   "Fantasy"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a3a",
+   "#2e2722"
+  ],
+  "addedAt": "2026-09-19",
+  "studio": "Studio Kumo",
+  "cast": [
+   "Emi Kato",
+   "Shin Ogawa"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "cinder-and-salt-s1e1",
+      "number": 1,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e2",
+      "number": 2,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e3",
+      "number": 3,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e4",
+      "number": 4,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e5",
+      "number": 5,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e6",
+      "number": 6,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e7",
+      "number": 7,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e8",
+      "number": 8,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e9",
+      "number": 9,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e10",
+      "number": 10,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e11",
+      "number": 11,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "cinder-and-salt-s1e12",
+      "number": 12,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/red-squirrel.jpg",
+  "backdropUrl": "/images/stills/red-squirrel.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t07",
+  "slug": "moonlit-arcade",
+  "type": "anime",
+  "name": "Moonlit Arcade",
+  "description": "An after-hours arcade where high scores grant small wishes. Its regulars are lonely, strange, and very competitive.",
+  "year": 2024,
+  "genres": [
+   "Slice of Life",
+   "Comedy"
+  ],
+  "ageRating": "10+",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#4a4a5a",
+   "#26262f"
+  ],
+  "staffPick": true,
+  "addedAt": "2026-06-11",
+  "studio": "Pixel Tea",
+  "cast": [
+   "Kana Mizuno",
+   "Daichi Hara"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "moonlit-arcade-s1e1",
+      "number": 1,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e2",
+      "number": 2,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e3",
+      "number": 3,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e4",
+      "number": 4,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e5",
+      "number": 5,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e6",
+      "number": 6,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e7",
+      "number": 7,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e8",
+      "number": 8,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e9",
+      "number": 9,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e10",
+      "number": 10,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e11",
+      "number": 11,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s1e12",
+      "number": 12,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "moonlit-arcade-s2e1",
+      "number": 1,
+      "name": "Static Hearts",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e2",
+      "number": 2,
+      "name": "Drift Market",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e3",
+      "number": 3,
+      "name": "Paper Moons",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e4",
+      "number": 4,
+      "name": "Blackout Run",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e5",
+      "number": 5,
+      "name": "The Quiet Between Stars",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e6",
+      "number": 6,
+      "name": "Ghost Signal",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e7",
+      "number": 7,
+      "name": "Orbit of Ash",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e8",
+      "number": 8,
+      "name": "Lanterns Out",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e9",
+      "number": 9,
+      "name": "The Long Way Round",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-01",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e10",
+      "number": 10,
+      "name": "Salt and Silver",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-08",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e11",
+      "number": 11,
+      "name": "What the River Knew",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-15",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "moonlit-arcade-s2e12",
+      "number": 12,
+      "name": "First Light",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-22",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/little-bird.jpg",
+  "backdropUrl": "/images/stills/little-bird.jpg",
+  "posterFocusX": 55
+ },
+ {
+  "id": "t08",
+  "slug": "little-bakery-spirits",
+  "type": "anime",
+  "name": "Little Bakery Spirits",
+  "description": "A new baker in a mountain town learns her oven is home to three very opinionated bread spirits.",
+  "year": 2025,
+  "genres": [
+   "Slice of Life",
+   "Fantasy",
+   "Comedy"
+  ],
+  "ageRating": "All",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#4a5a4a",
+   "#262e28"
+  ],
+  "addedAt": "2026-10-19",
+  "studio": "Foldline",
+  "cast": [
+   "Hina Sakai",
+   "Mio Endo"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "little-bakery-spirits-s1e1",
+      "number": 1,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e2",
+      "number": 2,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e3",
+      "number": 3,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e4",
+      "number": 4,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e5",
+      "number": 5,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e6",
+      "number": 6,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e7",
+      "number": 7,
+      "name": "Orbit of Ash",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e8",
+      "number": 8,
+      "name": "Lanterns Out",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e9",
+      "number": 9,
+      "name": "The Long Way Round",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-09-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e10",
+      "number": 10,
+      "name": "Salt and Silver",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e11",
+      "number": 11,
+      "name": "What the River Knew",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "little-bakery-spirits-s1e12",
+      "number": 12,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/meadow-bunny.jpg",
+  "backdropUrl": "/images/stills/meadow-bunny.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t09",
+  "slug": "sunday-train",
+  "type": "anime",
+  "name": "Sunday Train",
+  "description": "Every Sunday, a retired conductor rides the last train of the night and listens to whoever sits beside him.",
+  "year": 2024,
+  "genres": [
+   "Slice of Life",
+   "Drama"
+  ],
+  "ageRating": "All",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#5a4f3a",
+   "#2c2a24"
+  ],
+  "addedAt": "2026-04-02",
+  "studio": "Tidewell",
+  "cast": [
+   "Goro Ikeda"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "sunday-train-s1e1",
+      "number": 1,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "sunday-train-s1e2",
+      "number": 2,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "sunday-train-s1e3",
+      "number": 3,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "sunday-train-s1e4",
+      "number": 4,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "sunday-train-s1e5",
+      "number": 5,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "sunday-train-s1e6",
+      "number": 6,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "sunday-train-s1e7",
+      "number": 7,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "sunday-train-s1e8",
+      "number": 8,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "sunday-train-s1e9",
+      "number": 9,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "sunday-train-s1e10",
+      "number": 10,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/open-meadow.jpg",
+  "backdropUrl": "/images/stills/open-meadow.jpg",
+  "posterFocusX": 30
+ },
+ {
+  "id": "t10",
+  "slug": "lantern-street",
+  "type": "anime",
+  "name": "Lantern Street",
+  "description": "A shy lantern-maker and a festival dancer keep meeting by accident, every summer, for ten years.",
+  "year": 2025,
+  "genres": [
+   "Romance",
+   "Drama",
+   "Slice of Life"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#4a3a4a",
+   "#2a2329"
+  ],
+  "addedAt": "2026-08-25",
+  "studio": "Lantern Works",
+  "cast": [
+   "Sakura Ono",
+   "Riku Tamura"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "lantern-street-s1e1",
+      "number": 1,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "lantern-street-s1e2",
+      "number": 2,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "lantern-street-s1e3",
+      "number": 3,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "lantern-street-s1e4",
+      "number": 4,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "lantern-street-s1e5",
+      "number": 5,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "lantern-street-s1e6",
+      "number": 6,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "lantern-street-s1e7",
+      "number": 7,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "lantern-street-s1e8",
+      "number": 8,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "lantern-street-s1e9",
+      "number": 9,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "lantern-street-s1e10",
+      "number": 10,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "lantern-street-s1e11",
+      "number": 11,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "lantern-street-s1e12",
+      "number": 12,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-08-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/forest-friends.jpg",
+  "backdropUrl": "/images/stills/forest-friends.jpg",
+  "posterFocusX": 40
+ },
+ {
+  "id": "t11",
+  "slug": "starlit-courier",
+  "type": "anime",
+  "name": "Starlit Courier",
+  "description": "The galaxy's most unreliable delivery service has one rule: the package always arrives. Eventually.",
+  "year": 2026,
+  "genres": [
+   "Sci-Fi",
+   "Adventure",
+   "Comedy"
+  ],
+  "ageRating": "10+",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#3a4a6a",
+   "#1f2536"
+  ],
+  "addedAt": "2026-10-31",
+  "studio": "Studio Kumo",
+  "cast": [
+   "Yuto Mori",
+   "Aya Kondo"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "starlit-courier-s1e1",
+      "number": 1,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-24",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e2",
+      "number": 2,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-31",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e3",
+      "number": 3,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e4",
+      "number": 4,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e5",
+      "number": 5,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e6",
+      "number": 6,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e7",
+      "number": 7,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e8",
+      "number": 8,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e9",
+      "number": 9,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e10",
+      "number": 10,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/mountain-village.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e11",
+      "number": 11,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2027-01-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/deep-cave.jpg"
+     },
+     {
+      "id": "starlit-courier-s1e12",
+      "number": 12,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2027-01-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/above-clouds.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/mountain-village.jpg",
+  "backdropUrl": "/images/stills/mountain-village.jpg",
+  "posterFocusX": 35
+ },
+ {
+  "id": "t12",
+  "slug": "velvet-signal",
+  "type": "anime",
+  "name": "Velvet Signal",
+  "description": "A late-night radio host starts receiving calls from listeners who died decades ago.",
+  "year": 2026,
+  "genres": [
+   "Mystery",
+   "Horror",
+   "Drama"
+  ],
+  "ageRating": "16+",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#5a3f4c",
+   "#2b2228"
+  ],
+  "addedAt": "2026-10-24",
+  "studio": "Pixel Tea",
+  "cast": [
+   "Rei Kuroda",
+   "Tomo Sakamoto"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "velvet-signal-s1e1",
+      "number": 1,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e2",
+      "number": 2,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e3",
+      "number": 3,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e4",
+      "number": 4,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-10-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e5",
+      "number": 5,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-06",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e6",
+      "number": 6,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-13",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e7",
+      "number": 7,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-20",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e8",
+      "number": 8,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-11-27",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e9",
+      "number": 9,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e10",
+      "number": 10,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e11",
+      "number": 11,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "velvet-signal-s1e12",
+      "number": 12,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-12-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/blue-sheep.jpg",
+  "backdropUrl": "/images/stills/blue-sheep.jpg",
+  "posterFocusX": 40
+ },
+ {
+  "id": "t13",
+  "slug": "court-of-thunder",
+  "type": "anime",
+  "name": "Court of Thunder",
+  "description": "A first-year at a tiny school with no gym builds a volleyball team out of misfits and pure stubbornness.",
+  "year": 2025,
+  "genres": [
+   "Sports",
+   "Comedy",
+   "Drama"
+  ],
+  "ageRating": "All",
+  "sub": true,
+  "dub": true,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#3a3f5a",
+   "#22242f"
+  ],
+  "addedAt": "2026-07-21",
+  "studio": "Foldline",
+  "cast": [
+   "Sho Hayashi",
+   "Kenta Ito"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "court-of-thunder-s1e1",
+      "number": 1,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e2",
+      "number": 2,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e3",
+      "number": 3,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e4",
+      "number": 4,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e5",
+      "number": 5,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-05",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e6",
+      "number": 6,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-12",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e7",
+      "number": 7,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-19",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e8",
+      "number": 8,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-26",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e9",
+      "number": 9,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e10",
+      "number": 10,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e11",
+      "number": 11,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e12",
+      "number": 12,
+      "name": "Orbit of Ash",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-23",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e13",
+      "number": 13,
+      "name": "Lanterns Out",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-30",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e14",
+      "number": 14,
+      "name": "The Long Way Round",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e15",
+      "number": 15,
+      "name": "Salt and Silver",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e16",
+      "number": 16,
+      "name": "What the River Knew",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e17",
+      "number": 17,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e18",
+      "number": 18,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e19",
+      "number": 19,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e20",
+      "number": 20,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e21",
+      "number": 21,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-06-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e22",
+      "number": 22,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e23",
+      "number": 23,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-09",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "court-of-thunder-s1e24",
+      "number": 24,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-07-16",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/bow-closeup.jpg",
+  "backdropUrl": "/images/stills/bow-closeup.jpg",
+  "posterFocusX": 40
+ },
+ {
+  "id": "t14",
+  "slug": "encore-in-blue",
+  "type": "anime",
+  "name": "Encore in Blue",
+  "description": "Four strangers form a band to play one last show at a jazz bar that's closing forever.",
+  "year": 2024,
+  "genres": [
+   "Music",
+   "Drama",
+   "Romance"
+  ],
+  "ageRating": "13+",
+  "sub": true,
+  "dub": false,
+  "audioLanguages": [
+   "Japanese",
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Bahasa Indonesia",
+   "Français"
+  ],
+  "colors": [
+   "#344a6a",
+   "#1f2733"
+  ],
+  "addedAt": "2026-05-12",
+  "studio": "Tidewell",
+  "cast": [
+   "Miu Nakamura",
+   "Jun Okada"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "encore-in-blue-s1e1",
+      "number": 1,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e2",
+      "number": 2,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e3",
+      "number": 3,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e4",
+      "number": 4,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-07",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e5",
+      "number": 5,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-14",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e6",
+      "number": 6,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-21",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e7",
+      "number": 7,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-03-28",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e8",
+      "number": 8,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-04",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e9",
+      "number": 9,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-11",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e10",
+      "number": 10,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-18",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e11",
+      "number": 11,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-04-25",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "encore-in-blue-s1e12",
+      "number": 12,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-05-02",
+      "introStartSec": 5,
+      "introEndSec": 35,
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/meadow-yawn.jpg",
+  "backdropUrl": "/images/stills/meadow-yawn.jpg",
+  "posterFocusX": 30
+ },
+ {
+  "id": "t20",
+  "slug": "the-last-lighthouse",
+  "type": "movie",
+  "name": "The Last Lighthouse",
+  "description": "On a forgotten island, a keeper discovers the light she guards is keeping something out.",
+  "year": 2026,
+  "genres": [
+   "Mystery",
+   "Drama",
+   "Thriller"
+  ],
+  "ageRating": "13+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a7a",
+   "#2a2b40"
+  ],
+  "featured": true,
+  "staffPick": true,
+  "addedAt": "2026-11-04",
+  "studio": "Northwind Pictures",
+  "cast": [
+   "Elena Marsh",
+   "Tomas Reyes",
+   "Iris Hale"
+  ],
+  "durationSec": 6720,
+  "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+  "introStartSec": 0,
+  "introEndSec": 0,
+  "posterUrl": "/images/stills/forest-bow.jpg",
+  "backdropUrl": "/images/stills/forest-bow.jpg",
+  "posterFocusX": 45
+ },
+ {
+  "id": "t21",
+  "slug": "mochi-detective",
+  "type": "movie",
+  "name": "Mochi Detective",
+  "description": "A dessert-obsessed detective has 24 hours to find a stolen recipe before the city's biggest food festival.",
+  "year": 2025,
+  "genres": [
+   "Comedy",
+   "Mystery",
+   "Family"
+  ],
+  "ageRating": "All",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a3f4c",
+   "#2b2228"
+  ],
+  "featured": true,
+  "staffPick": true,
+  "addedAt": "2026-10-14",
+  "studio": "Sweetbean Films",
+  "cast": [
+   "Lily Park",
+   "Marcus Bell"
+  ],
+  "durationSec": 5880,
+  "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+  "posterUrl": "/images/stills/squirrel-grin.jpg",
+  "backdropUrl": "/images/stills/squirrel-grin.jpg",
+  "posterFocusX": 60
+ },
+ {
+  "id": "t22",
+  "slug": "iron-orchard",
+  "type": "movie",
+  "name": "Iron Orchard",
+  "description": "In a future where trees are extinct, a farmer grows the last orchard, and an army comes to take it.",
+  "year": 2026,
+  "genres": [
+   "Sci-Fi",
+   "Action",
+   "Drama"
+  ],
+  "ageRating": "16+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#3a3a4a",
+   "#22222b"
+  ],
+  "addedAt": "2026-11-06",
+  "studio": "Northwind Pictures",
+  "cast": [
+   "Daniel Okafor",
+   "Sasha Lind"
+  ],
+  "durationSec": 7440,
+  "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+  "posterUrl": "/images/stills/mountain-village.jpg",
+  "backdropUrl": "/images/stills/mountain-village.jpg",
+  "posterFocusX": 35
+ },
+ {
+  "id": "t23",
+  "slug": "quiet-engines",
+  "type": "movie",
+  "name": "Quiet Engines",
+  "description": "A retired race driver and her estranged son rebuild a car neither of them wants to drive.",
+  "year": 2026,
+  "genres": [
+   "Drama",
+   "Family"
+  ],
+  "ageRating": "10+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a5a",
+   "#2b252b"
+  ],
+  "addedAt": "2026-10-30",
+  "studio": "Halfmoon",
+  "cast": [
+   "Grace Holloway",
+   "Ben Carter"
+  ],
+  "durationSec": 6360,
+  "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+  "posterUrl": "/images/stills/meadow-yawn.jpg",
+  "backdropUrl": "/images/stills/meadow-yawn.jpg",
+  "posterFocusX": 30
+ },
+ {
+  "id": "t24",
+  "slug": "lone-star-diner",
+  "type": "movie",
+  "name": "Lone Star Diner",
+  "description": "One night, one roadside diner, and eleven customers who all want the same mysterious briefcase.",
+  "year": 2024,
+  "genres": [
+   "Comedy",
+   "Thriller"
+  ],
+  "ageRating": "16+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#4a4a5a",
+   "#26262f"
+  ],
+  "addedAt": "2026-06-21",
+  "studio": "Halfmoon",
+  "cast": [
+   "Ray Dawson",
+   "June Ortiz"
+  ],
+  "durationSec": 5700,
+  "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+  "posterUrl": "/images/stills/red-squirrel.jpg",
+  "backdropUrl": "/images/stills/red-squirrel.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t25",
+  "slug": "the-weight-of-snow",
+  "type": "movie",
+  "name": "The Weight of Snow",
+  "description": "Snowed in at a mountain lodge, a family discovers one of them has been lying for twenty years.",
+  "year": 2025,
+  "genres": [
+   "Drama",
+   "Mystery"
+  ],
+  "ageRating": "13+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#3f4a5a",
+   "#232830"
+  ],
+  "addedAt": "2026-09-14",
+  "studio": "Northwind Pictures",
+  "cast": [
+   "Anna Voss",
+   "Leo Grant"
+  ],
+  "durationSec": 7080,
+  "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+  "posterUrl": "/images/stills/above-clouds.jpg",
+  "backdropUrl": "/images/stills/above-clouds.jpg",
+  "posterFocusX": 42
+ },
+ {
+  "id": "t26",
+  "slug": "deep-blue-hours",
+  "type": "movie",
+  "name": "Deep Blue Hours",
+  "description": "A documentary following three free-divers attempting depths no one has reached before.",
+  "year": 2025,
+  "genres": [
+   "Documentary"
+  ],
+  "ageRating": "All",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#2f4a5a",
+   "#1d2830"
+  ],
+  "addedAt": "2026-08-30",
+  "studio": "Open Water",
+  "cast": [
+   "Narrated by Clara West"
+  ],
+  "durationSec": 5340,
+  "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+  "posterUrl": "/images/stills/deep-cave.jpg",
+  "backdropUrl": "/images/stills/deep-cave.jpg",
+  "posterFocusX": 65
+ },
+ {
+  "id": "t27",
+  "slug": "the-paper-crown",
+  "type": "movie",
+  "name": "The Paper Crown",
+  "description": "A kid who loses the school play's lead role decides to stage a rival play in her backyard.",
+  "year": 2024,
+  "genres": [
+   "Family",
+   "Comedy"
+  ],
+  "ageRating": "All",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a5040",
+   "#2c2924"
+  ],
+  "addedAt": "2026-04-22",
+  "studio": "Sweetbean Films",
+  "cast": [
+   "Ivy Chen",
+   "Paul Grey"
+  ],
+  "durationSec": 5520,
+  "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+  "posterUrl": "/images/stills/meadow-bunny.jpg",
+  "backdropUrl": "/images/stills/meadow-bunny.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t28",
+  "slug": "after-the-static",
+  "type": "movie",
+  "name": "After the Static",
+  "description": "Every TV in town switches on at 3:33 a.m., showing a channel no one has heard of.",
+  "year": 2026,
+  "genres": [
+   "Horror",
+   "Mystery"
+  ],
+  "ageRating": "18+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#4a3a3f",
+   "#272224"
+  ],
+  "addedAt": "2026-10-21",
+  "studio": "Halfmoon",
+  "cast": [
+   "Nora Blake",
+   "Evan Cross"
+  ],
+  "durationSec": 6060,
+  "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+  "posterUrl": "/images/stills/blue-sheep.jpg",
+  "backdropUrl": "/images/stills/blue-sheep.jpg",
+  "posterFocusX": 40
+ },
+ {
+  "id": "t29",
+  "slug": "letters-to-marigold",
+  "type": "movie",
+  "name": "Letters to Marigold",
+  "description": "A postman starts answering the unsendable letters left at a closed post office.",
+  "year": 2025,
+  "genres": [
+   "Romance",
+   "Drama"
+  ],
+  "ageRating": "10+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a42",
+   "#2c2624"
+  ],
+  "addedAt": "2026-08-05",
+  "studio": "Halfmoon",
+  "cast": [
+   "Owen Hart",
+   "Mila Rossi"
+  ],
+  "durationSec": 6540,
+  "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+  "posterUrl": "/images/stills/pink-caterpillar.jpg",
+  "backdropUrl": "/images/stills/pink-caterpillar.jpg",
+  "posterFocusX": 45
+ },
+ {
+  "id": "t40",
+  "slug": "glass-harbor",
+  "type": "series",
+  "name": "Glass Harbor",
+  "description": "A harbor town's new police chief uncovers smuggling, secrets, and a decades-old disappearance.",
+  "year": 2025,
+  "genres": [
+   "Crime",
+   "Drama",
+   "Mystery"
+  ],
+  "ageRating": "16+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#35505a",
+   "#1f2a2e"
+  ],
+  "featured": true,
+  "staffPick": true,
+  "addedAt": "2026-10-04",
+  "studio": "Northwind Television",
+  "cast": [
+   "Helen Shaw",
+   "Adrian Cole",
+   "Ruth Kim"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "glass-harbor-s1e1",
+      "number": 1,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 3120,
+      "releaseDate": "2025-11-24",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e2",
+      "number": 2,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 3120,
+      "releaseDate": "2025-12-01",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e3",
+      "number": 3,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 3120,
+      "releaseDate": "2025-12-08",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e4",
+      "number": 4,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 3120,
+      "releaseDate": "2025-12-15",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e5",
+      "number": 5,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 3120,
+      "releaseDate": "2025-12-22",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e6",
+      "number": 6,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 3120,
+      "releaseDate": "2025-12-29",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e7",
+      "number": 7,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 3120,
+      "releaseDate": "2026-01-05",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "glass-harbor-s1e8",
+      "number": 8,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 3120,
+      "releaseDate": "2026-01-12",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "glass-harbor-s2e1",
+      "number": 1,
+      "name": "The Last Bell",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 3120,
+      "releaseDate": "2026-10-01",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e2",
+      "number": 2,
+      "name": "The Runaway",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 3120,
+      "releaseDate": "2026-10-08",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e3",
+      "number": 3,
+      "name": "Static Hearts",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 3120,
+      "releaseDate": "2026-10-15",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e4",
+      "number": 4,
+      "name": "Drift Market",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 3120,
+      "releaseDate": "2026-10-22",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e5",
+      "number": 5,
+      "name": "Paper Moons",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 3120,
+      "releaseDate": "2026-10-29",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e6",
+      "number": 6,
+      "name": "Blackout Run",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 3120,
+      "releaseDate": "2026-11-05",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e7",
+      "number": 7,
+      "name": "The Quiet Between Stars",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 3120,
+      "releaseDate": "2026-11-12",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "glass-harbor-s2e8",
+      "number": 8,
+      "name": "Ghost Signal",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 3120,
+      "releaseDate": "2026-11-19",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/laundromat.jpg",
+  "backdropUrl": "/images/stills/laundromat.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t41",
+  "slug": "north-of-nowhere",
+  "type": "series",
+  "name": "North of Nowhere",
+  "description": "Strangers stranded at an Arctic research station realize the rescue plane isn't coming.",
+  "year": 2026,
+  "genres": [
+   "Thriller",
+   "Sci-Fi",
+   "Mystery"
+  ],
+  "ageRating": "16+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#3a4a5a",
+   "#20262e"
+  ],
+  "addedAt": "2026-11-02",
+  "studio": "Coldfront",
+  "cast": [
+   "Jonas Berg",
+   "Amara Diallo"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "north-of-nowhere-s1e1",
+      "number": 1,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 2880,
+      "releaseDate": "2026-10-12",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/steel-city.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e2",
+      "number": 2,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 2880,
+      "releaseDate": "2026-10-19",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e3",
+      "number": 3,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 2880,
+      "releaseDate": "2026-10-26",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e4",
+      "number": 4,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 2880,
+      "releaseDate": "2026-11-02",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e5",
+      "number": 5,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 2880,
+      "releaseDate": "2026-11-09",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e6",
+      "number": 6,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 2880,
+      "releaseDate": "2026-11-16",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e7",
+      "number": 7,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 2880,
+      "releaseDate": "2026-11-23",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "north-of-nowhere-s1e8",
+      "number": 8,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 2880,
+      "releaseDate": "2026-11-30",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/steel-city.jpg",
+  "backdropUrl": "/images/stills/steel-city.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t42",
+  "slug": "the-quiet-firm",
+  "type": "series",
+  "name": "The Quiet Firm",
+  "description": "A tiny law office takes the cases no one else will, and wins far more often than it should.",
+  "year": 2024,
+  "genres": [
+   "Drama",
+   "Crime",
+   "Comedy"
+  ],
+  "ageRating": "13+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#4a4a42",
+   "#272724"
+  ],
+  "addedAt": "2026-06-01",
+  "studio": "Halfmoon",
+  "cast": [
+   "Victor Lane",
+   "Priya Nair"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "the-quiet-firm-s1e1",
+      "number": 1,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 2640,
+      "releaseDate": "2025-08-02",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e2",
+      "number": 2,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 2640,
+      "releaseDate": "2025-08-09",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e3",
+      "number": 3,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 2640,
+      "releaseDate": "2025-08-16",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e4",
+      "number": 4,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 2640,
+      "releaseDate": "2025-08-23",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e5",
+      "number": 5,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 2640,
+      "releaseDate": "2025-08-30",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e6",
+      "number": 6,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 2640,
+      "releaseDate": "2025-09-06",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e7",
+      "number": 7,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 2640,
+      "releaseDate": "2025-09-13",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e8",
+      "number": 8,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 2640,
+      "releaseDate": "2025-09-20",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e9",
+      "number": 9,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 2640,
+      "releaseDate": "2025-09-27",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s1e10",
+      "number": 10,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 2640,
+      "releaseDate": "2025-10-04",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "the-quiet-firm-s2e1",
+      "number": 1,
+      "name": "Static Hearts",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 2640,
+      "releaseDate": "2026-03-20",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e2",
+      "number": 2,
+      "name": "Drift Market",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 2640,
+      "releaseDate": "2026-03-27",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e3",
+      "number": 3,
+      "name": "Paper Moons",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 2640,
+      "releaseDate": "2026-04-03",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e4",
+      "number": 4,
+      "name": "Blackout Run",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 2640,
+      "releaseDate": "2026-04-10",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e5",
+      "number": 5,
+      "name": "The Quiet Between Stars",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 2640,
+      "releaseDate": "2026-04-17",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e6",
+      "number": 6,
+      "name": "Ghost Signal",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 2640,
+      "releaseDate": "2026-04-24",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e7",
+      "number": 7,
+      "name": "Orbit of Ash",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 2640,
+      "releaseDate": "2026-05-01",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e8",
+      "number": 8,
+      "name": "Lanterns Out",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 2640,
+      "releaseDate": "2026-05-08",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e9",
+      "number": 9,
+      "name": "The Long Way Round",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 2640,
+      "releaseDate": "2026-05-15",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "the-quiet-firm-s2e10",
+      "number": 10,
+      "name": "Salt and Silver",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 2640,
+      "releaseDate": "2026-05-22",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/forest-friends.jpg",
+  "backdropUrl": "/images/stills/forest-friends.jpg",
+  "posterFocusX": 40
+ },
+ {
+  "id": "t43",
+  "slug": "kitchen-at-midnight",
+  "type": "series",
+  "name": "Kitchen at Midnight",
+  "description": "Home cooks compete in a pop-up restaurant that only opens between midnight and dawn.",
+  "year": 2026,
+  "genres": [
+   "Reality"
+  ],
+  "ageRating": "All",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a453a",
+   "#2c2522"
+  ],
+  "addedAt": "2026-10-29",
+  "studio": "Open Water",
+  "cast": [
+   "Hosted by Sam Rivers"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "kitchen-at-midnight-s1e1",
+      "number": 1,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 2700,
+      "releaseDate": "2026-10-07",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e2",
+      "number": 2,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 2700,
+      "releaseDate": "2026-10-14",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e3",
+      "number": 3,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 2700,
+      "releaseDate": "2026-10-21",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e4",
+      "number": 4,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 2700,
+      "releaseDate": "2026-10-28",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e5",
+      "number": 5,
+      "name": "Paper Moons",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 2700,
+      "releaseDate": "2026-11-04",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e6",
+      "number": 6,
+      "name": "Blackout Run",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 2700,
+      "releaseDate": "2026-11-11",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e7",
+      "number": 7,
+      "name": "The Quiet Between Stars",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 2700,
+      "releaseDate": "2026-11-18",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "kitchen-at-midnight-s1e8",
+      "number": 8,
+      "name": "Ghost Signal",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 2700,
+      "releaseDate": "2026-11-25",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/rainbow-tornado.jpg",
+  "backdropUrl": "/images/stills/rainbow-tornado.jpg",
+  "posterFocusX": 45
+ },
+ {
+  "id": "t44",
+  "slug": "small-wonders",
+  "type": "series",
+  "name": "Small Wonders",
+  "description": "A nature documentary series about the tiniest animals with the biggest stories.",
+  "year": 2025,
+  "genres": [
+   "Documentary"
+  ],
+  "ageRating": "All",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#3f5a45",
+   "#232e26"
+  ],
+  "addedAt": "2026-08-15",
+  "studio": "Open Water",
+  "cast": [
+   "Narrated by Clara West"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "small-wonders-s1e1",
+      "number": 1,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 3000,
+      "releaseDate": "2026-07-06",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "small-wonders-s1e2",
+      "number": 2,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 3000,
+      "releaseDate": "2026-07-13",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "small-wonders-s1e3",
+      "number": 3,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 3000,
+      "releaseDate": "2026-07-20",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "small-wonders-s1e4",
+      "number": 4,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 3000,
+      "releaseDate": "2026-07-27",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "small-wonders-s1e5",
+      "number": 5,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 3000,
+      "releaseDate": "2026-08-03",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "small-wonders-s1e6",
+      "number": 6,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 3000,
+      "releaseDate": "2026-08-10",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/little-bird.jpg",
+  "backdropUrl": "/images/stills/little-bird.jpg",
+  "posterFocusX": 55
+ },
+ {
+  "id": "t45",
+  "slug": "the-ninth-floor",
+  "type": "series",
+  "name": "The Ninth Floor",
+  "description": "An office building's elevator keeps stopping at a floor that isn't supposed to exist.",
+  "year": 2026,
+  "genres": [
+   "Sci-Fi",
+   "Mystery",
+   "Thriller"
+  ],
+  "ageRating": "13+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#4a3f5a",
+   "#26222e"
+  ],
+  "addedAt": "2026-10-11",
+  "studio": "Coldfront",
+  "cast": [
+   "Maya Lin",
+   "Chris Doyle"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "the-ninth-floor-s1e1",
+      "number": 1,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 2400,
+      "releaseDate": "2026-08-23",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e2",
+      "number": 2,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 2400,
+      "releaseDate": "2026-08-30",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e3",
+      "number": 3,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 2400,
+      "releaseDate": "2026-09-06",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e4",
+      "number": 4,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 2400,
+      "releaseDate": "2026-09-13",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e5",
+      "number": 5,
+      "name": "The Last Bell",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 2400,
+      "releaseDate": "2026-09-20",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/laundromat.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e6",
+      "number": 6,
+      "name": "The Runaway",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 2400,
+      "releaseDate": "2026-09-27",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/blue-sheep.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e7",
+      "number": 7,
+      "name": "Static Hearts",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 2400,
+      "releaseDate": "2026-10-04",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/pink-caterpillar.jpg"
+     },
+     {
+      "id": "the-ninth-floor-s1e8",
+      "number": 8,
+      "name": "Drift Market",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 2400,
+      "releaseDate": "2026-10-11",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/rainbow-tornado.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/laundromat.jpg",
+  "backdropUrl": "/images/stills/laundromat.jpg",
+  "posterFocusX": 50
+ },
+ {
+  "id": "t46",
+  "slug": "flatmates",
+  "type": "series",
+  "name": "Flatmates",
+  "description": "Five strangers, one tiny apartment, and a landlord who lives in the closet.",
+  "year": 2024,
+  "genres": [
+   "Comedy"
+  ],
+  "ageRating": "13+",
+  "audioLanguages": [
+   "English"
+  ],
+  "subtitleLanguages": [
+   "English",
+   "Español",
+   "Français"
+  ],
+  "colors": [
+   "#5a4a50",
+   "#2c2527"
+  ],
+  "addedAt": "2026-03-03",
+  "studio": "Halfmoon",
+  "cast": [
+   "Tess Morgan",
+   "Ali Hassan"
+  ],
+  "seasons": [
+   {
+    "number": 1,
+    "episodes": [
+     {
+      "id": "flatmates-s1e1",
+      "number": 1,
+      "name": "The Long Way Round",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2025-04-24",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "flatmates-s1e2",
+      "number": 2,
+      "name": "Salt and Silver",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2025-05-01",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "flatmates-s1e3",
+      "number": 3,
+      "name": "What the River Knew",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2025-05-08",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "flatmates-s1e4",
+      "number": 4,
+      "name": "First Light",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2025-05-15",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "flatmates-s1e5",
+      "number": 5,
+      "name": "A Door in the Fog",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2025-05-22",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "flatmates-s1e6",
+      "number": 6,
+      "name": "Low Tide",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2025-05-29",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "flatmates-s1e7",
+      "number": 7,
+      "name": "Borrowed Time",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2025-06-05",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "flatmates-s1e8",
+      "number": 8,
+      "name": "The Glass Garden",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2025-06-12",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "flatmates-s1e9",
+      "number": 9,
+      "name": "Sparks",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2025-06-19",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "flatmates-s1e10",
+      "number": 10,
+      "name": "Homeward",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2025-06-26",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "episodes": [
+     {
+      "id": "flatmates-s2e1",
+      "number": 1,
+      "name": "The Glass Garden",
+      "description": "A quick stop turns into a chase across the city.",
+      "durationSec": 1440,
+      "releaseDate": "2025-12-20",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     },
+     {
+      "id": "flatmates-s2e2",
+      "number": 2,
+      "name": "Sparks",
+      "description": "An old friend appears on the wrong side.",
+      "durationSec": 1440,
+      "releaseDate": "2025-12-27",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/red-squirrel.jpg"
+     },
+     {
+      "id": "flatmates-s2e3",
+      "number": 3,
+      "name": "Homeward",
+      "description": "Twelve minutes of air, two ways out.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-03",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/bow-closeup.jpg"
+     },
+     {
+      "id": "flatmates-s2e4",
+      "number": 4,
+      "name": "The Last Bell",
+      "description": "A fragile truce is tested by a single lie.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-10",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/little-bird.jpg"
+     },
+     {
+      "id": "flatmates-s2e5",
+      "number": 5,
+      "name": "The Runaway",
+      "description": "A distress call from a ship destroyed a century ago.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-17",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/meadow-yawn.jpg"
+     },
+     {
+      "id": "flatmates-s2e6",
+      "number": 6,
+      "name": "Static Hearts",
+      "description": "The crew lands somewhere that shouldn't exist.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-24",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/meadow-bunny.jpg"
+     },
+     {
+      "id": "flatmates-s2e7",
+      "number": 7,
+      "name": "Drift Market",
+      "description": "The power fails, and something wakes up in the dark.",
+      "durationSec": 1440,
+      "releaseDate": "2026-01-31",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/forest-bow.jpg"
+     },
+     {
+      "id": "flatmates-s2e8",
+      "number": 8,
+      "name": "Paper Moons",
+      "description": "A detour reveals more than anyone wanted to know.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-07",
+      "videoUrl": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+      "thumbUrl": "/images/stills/forest-friends.jpg"
+     },
+     {
+      "id": "flatmates-s2e9",
+      "number": 9,
+      "name": "Blackout Run",
+      "description": "An unexpected passenger changes everything.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-14",
+      "videoUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "thumbUrl": "/images/stills/squirrel-grin.jpg"
+     },
+     {
+      "id": "flatmates-s2e10",
+      "number": 10,
+      "name": "The Quiet Between Stars",
+      "description": "Old memories surface at the worst possible moment.",
+      "durationSec": 1440,
+      "releaseDate": "2026-02-21",
+      "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "thumbUrl": "/images/stills/open-meadow.jpg"
+     }
+    ]
+   }
+  ],
+  "posterUrl": "/images/stills/squirrel-grin.jpg",
+  "backdropUrl": "/images/stills/squirrel-grin.jpg",
+  "posterFocusX": 60
+ }
+]
