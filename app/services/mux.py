@@ -14,10 +14,13 @@ import httpx
 from app.config import Settings
 
 API_BASE = "https://api.mux.com"
+UPLOAD_TIMEOUT_SEC = 3600  # Mux marks an unused upload URL "timed_out" after this
 
 
 class MuxError(RuntimeError):
-    pass
+    def __init__(self, message: str, status_code: int | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
 
 
 class MuxClient:
@@ -55,7 +58,9 @@ class MuxClient:
                 messages = r.json().get("error", {}).get("messages") or [r.text]
             except ValueError:
                 messages = [r.text]
-            raise MuxError(f"Mux {r.status_code}: {'; '.join(map(str, messages))}")
+            raise MuxError(
+                f"Mux {r.status_code}: {'; '.join(map(str, messages))}", r.status_code
+            )
         return r.json().get("data", {})
 
     def create_upload(self, cors_origin: str) -> dict[str, Any]:
@@ -65,6 +70,7 @@ class MuxClient:
             "/video/v1/uploads",
             json={
                 "cors_origin": cors_origin,
+                "timeout": UPLOAD_TIMEOUT_SEC,
                 "new_asset_settings": {
                     "playback_policies": ["public"],
                     "video_quality": "basic",
@@ -82,8 +88,12 @@ class MuxClient:
         try:
             self._call("DELETE", f"/video/v1/assets/{asset_id}")
         except MuxError as e:
-            if "404" not in str(e):  # already gone is fine
+            if e.status_code != 404:  # already gone is fine
                 raise
+
+    def cancel_upload(self, upload_id: str) -> dict[str, Any]:
+        """Cancel a direct upload that hasn't produced an asset yet."""
+        return self._call("PUT", f"/video/v1/uploads/{upload_id}/cancel")
 
     def close(self) -> None:
         self._http.close()

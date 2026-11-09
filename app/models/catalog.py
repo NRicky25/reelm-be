@@ -119,7 +119,7 @@ class Title(Base):
     video_id: Mapped[str | None] = mapped_column(
         ForeignKey("videos.id", ondelete="SET NULL")
     )
-    video: Mapped[Video | None] = relationship(lazy="joined")
+    video: Mapped[Video | None] = relationship(foreign_keys=[video_id], lazy="joined")
 
     genre_links: Mapped[list[TitleGenre]] = relationship(
         order_by=TitleGenre.position,
@@ -195,7 +195,7 @@ class Episode(Base):
     )
 
     season: Mapped[Season] = relationship(back_populates="episodes")
-    video: Mapped[Video | None] = relationship(lazy="joined")
+    video: Mapped[Video | None] = relationship(foreign_keys=[video_id], lazy="joined")
 
     def __str__(self) -> str:
         return f"E{self.number} · {self.name}"

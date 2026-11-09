@@ -2,13 +2,17 @@
 
 Flow:
 1. Admin picks a title (and episode, for shows) and a file.
-2. POST /admin/upload/start creates a Mux direct upload + a `videos` row
-   (status "waiting") and attaches it to the episode/movie.
+2. POST /admin/upload/start creates a Mux direct upload and a `videos` row
+   (status "waiting") with the episode/movie as its *pending* target.
+   The episode/movie keeps playing its current video meanwhile.
 3. The browser PUTs the file straight to Mux (it never passes through us).
-4. The page polls /admin/upload/status/<id>, which asks Mux for progress,
-   until the video is "ready". (Webhooks, if configured, update it too.)
+4. The page polls /admin/upload/status/<id>, which asks Mux for progress.
+   When Mux says "ready", the episode/movie switches to the new video and the
+   old one is deleted. (Webhooks, if configured, do the same.)
 """
 
+import logging
+from datetime import timedelta
 from typing import Any, ClassVar
 
 import anyio
@@ -29,24 +33,10 @@ from app.models import (
     VideoStatus,
 )
 from app.services.mux import MuxClient, MuxError
-from app.services.video_sync import sync_from_mux
+from app.services.video_sync import sync_from_mux, sync_stale_uploads
 
-
-def delete_videos_everywhere(
-    session: Session, video_ids: list[str], mux: MuxClient | None
-) -> None:
-    """Delete video rows and, for Mux videos, the Mux asset too (best effort)."""
-    if not video_ids:
-        return
-    videos = list(session.scalars(select(Video).where(Video.id.in_(video_ids))))
-    for v in videos:
-        if mux and v.provider == VideoProvider.mux and v.asset_id:
-            try:
-                mux.delete_asset(v.asset_id)
-            except MuxError:
-                pass  # the row still goes; an orphan asset can be removed in the Mux dashboard
-        session.delete(v)
-    session.commit()
+log = logging.getLogger(__name__)
+STALE_AFTER = timedelta(minutes=2)
 
 
 class UploadView(BaseView):
@@ -71,6 +61,20 @@ class UploadView(BaseView):
 
     @expose("/upload", methods=["GET"], identity="upload")
     async def page(self, request: Request) -> Response:
+        if self.settings.mux_enabled:
+            # catch up on uploads that were left waiting (closed tab, no webhooks)
+            def catch_up() -> None:
+                mux = self._mux()
+                try:
+                    sync_stale_uploads(self.session_maker, mux, older_than=STALE_AFTER)
+                finally:
+                    mux.close()
+
+            try:
+                await anyio.to_thread.run_sync(catch_up)
+            except MuxError as e:
+                log.warning("Couldn't check waiting uploads: %s", e)
+
         titles = await self._db(
             lambda s: [
                 {"id": t.id, "name": t.name, "type": t.type.value}
@@ -116,73 +120,75 @@ class UploadView(BaseView):
                 {"error": "Mux isn't configured (MUX_TOKEN_ID / MUX_TOKEN_SECRET)."},
                 400,
             )
-        body = await request.json()
+        try:
+            body = await request.json()
+        except ValueError:
+            body = None
+        if not isinstance(body, dict):
+            return JSONResponse({"error": "Send a JSON object."}, 400)
         title_id, episode_id = body.get("title_id"), body.get("episode_id") or None
+        # The same-origin middleware has already checked Origin against Host.
         origin = request.headers.get("origin") or str(request.base_url).rstrip("/")
 
-        def start_upload(s: Session) -> dict[str, Any]:
-            title = s.get(Title, title_id)
+        # 1) check the target (short DB read)
+        def find_target(s: Session) -> dict[str, str]:
+            title = s.get(Title, title_id) if isinstance(title_id, str) else None
             if title is None:
                 raise ValueError("Pick a title.")
             if title.type == TitleType.movie:
-                owner: Title | Episode = title
-            else:
-                episode = s.get(Episode, episode_id) if episode_id else None
-                if episode is None or episode.season.title_id != title.id:
-                    raise ValueError("Pick an episode of this show.")
-                owner = episode
+                return {"pending_title_id": title.id}
+            episode = (
+                s.get(Episode, episode_id) if isinstance(episode_id, str) else None
+            )
+            if episode is None or episode.season.title_id != title.id:
+                raise ValueError("Pick an episode of this show.")
+            return {"pending_episode_id": episode.id}
 
+        # 2) create the Mux upload (no transaction open)
+        def create_upload() -> dict[str, Any]:
             mux = self._mux()
             try:
-                upload = mux.create_upload(cors_origin=origin)
-                video = Video(
-                    provider=VideoProvider.mux,
-                    status=VideoStatus.waiting,
-                    upload_id=upload["id"],
-                )
-                s.add(video)
-                old_video_id = owner.video_id
-                owner.video = video
-                s.commit()
-                # the old video (if any) is replaced: remove it, including its Mux asset
-                delete_videos_everywhere(s, [old_video_id] if old_video_id else [], mux)
-                return {"video_id": video.id, "upload_url": upload["url"]}
+                return mux.create_upload(cors_origin=origin)
             finally:
                 mux.close()
 
+        # 3) remember it, with its pending target
+        def save(s: Session, target: dict[str, str], upload: dict[str, Any]) -> str:
+            video = Video(
+                provider=VideoProvider.mux,
+                status=VideoStatus.waiting,
+                upload_id=upload["id"],
+                **target,
+            )
+            s.add(video)
+            s.commit()
+            return video.id
+
         try:
-            return JSONResponse(await self._db(start_upload))
+            target = await self._db(find_target)
+            upload = await anyio.to_thread.run_sync(create_upload)
+            video_id = await self._db(lambda s: save(s, target, upload))
         except (ValueError, MuxError) as e:
             return JSONResponse({"error": str(e)}, 400)
+        return JSONResponse({"video_id": video_id, "upload_url": upload["url"]})
 
     @expose("/upload/status/{video_id}", methods=["GET"], identity="upload_status")
     async def status(self, request: Request) -> Response:
         video_id = request.path_params["video_id"]
 
-        def check(s: Session) -> dict[str, Any] | None:
-            video = s.get(Video, video_id)
-            if video is None:
-                return None
-            if (
-                video.provider == VideoProvider.mux
-                and video.status == VideoStatus.waiting
-            ):
-                mux = self._mux()
-                try:
-                    sync_from_mux(s, mux, video)
-                finally:
-                    mux.close()
-            return {
-                "status": video.status.value,
-                "error": video.error_message,
-                "playback_id": video.playback_id,
-                "duration_sec": video.duration_sec,
-            }
+        def check() -> dict[str, Any] | None:
+            mux = self._mux()
+            try:
+                return sync_from_mux(self.session_maker, mux, video_id)
+            finally:
+                mux.close()
 
         try:
-            result = await self._db(check)
+            result = await anyio.to_thread.run_sync(check)
         except MuxError as e:
             return JSONResponse({"status": "waiting", "error": None, "note": str(e)})
         if result is None:
-            return JSONResponse({"error": "Unknown video"}, 404)
+            return JSONResponse(
+                {"error": "Unknown video (it may have been replaced or deleted)."}, 404
+            )
         return JSONResponse(result)

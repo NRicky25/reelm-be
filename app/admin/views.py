@@ -21,7 +21,8 @@ from wtforms import Form, StringField, validators
 
 from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
-from app.services.mux import MuxClient, MuxError
+from app.services.mux import MuxClient
+from app.services.video_sync import delete_videos_everywhere, remove_from_mux
 
 T = TypeVar("T")
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -111,12 +112,29 @@ class CsvFieldsMixin:
         setattr(model, attr, values)
 
 
+def _pending_uploads(session: Session, *, episode_ids=(), title_ids=()) -> list[str]:
+    """Uploads still processing for these episodes/movies (they'd be orphaned otherwise)."""
+    return list(
+        session.scalars(
+            select(Video.id).where(
+                Video.pending_episode_id.in_(list(episode_ids))
+                | Video.pending_title_id.in_(list(title_ids))
+            )
+        )
+    )
+
+
 def _video_ids_of_titles(session: Session, title_ids: list[str]) -> list[str]:
     movie = session.scalars(select(Title.video_id).where(Title.id.in_(title_ids))).all()
-    episodes = session.scalars(
-        select(Episode.video_id).join(Season).where(Season.title_id.in_(title_ids))
+    episodes = session.execute(
+        select(Episode.id, Episode.video_id)
+        .join(Season)
+        .where(Season.title_id.in_(title_ids))
     ).all()
-    return [v for v in (*movie, *episodes) if v]
+    pending = _pending_uploads(
+        session, episode_ids=[e for e, _ in episodes], title_ids=title_ids
+    )
+    return [v for v in (*movie, *(v for _, v in episodes), *pending) if v]
 
 
 _settings: Settings | None = None
@@ -129,9 +147,6 @@ def configure_views(settings: Settings) -> None:
 
 
 def _delete_videos(session: Session, video_ids: list[str]) -> None:
-    # imported here to avoid a circular import
-    from app.admin.upload import delete_videos_everywhere
-
     mux = (
         MuxClient.from_settings(_settings)
         if _settings and _settings.mux_enabled
@@ -357,13 +372,11 @@ class SeasonAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Season):
     }
 
     def video_ids_for(self, session: Session, model: Season) -> list[str]:
-        return [
-            v
-            for v in session.scalars(
-                select(Episode.video_id).where(Episode.season_id == model.id)
-            )
-            if v
-        ]
+        episodes = session.execute(
+            select(Episode.id, Episode.video_id).where(Episode.season_id == model.id)
+        ).all()
+        pending = _pending_uploads(session, episode_ids=[e for e, _ in episodes])
+        return [v for v in (*(v for _, v in episodes), *pending) if v]
 
 
 class EpisodeAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Episode):
@@ -421,7 +434,9 @@ class EpisodeAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Episode):
 
     def video_ids_for(self, session: Session, model: Episode) -> list[str]:
         vid = session.scalar(select(Episode.video_id).where(Episode.id == model.id))
-        return [vid] if vid else []
+        return [
+            v for v in (vid, *_pending_uploads(session, episode_ids=[model.id])) if v
+        ]
 
 
 class GenreAdmin(BaseAdmin, model=Genre):
@@ -487,15 +502,15 @@ class VideoAdmin(BaseAdmin, model=Video):
         # The row is gone; remove the Mux asset too so it doesn't count toward the plan limit.
         if (
             model.provider.value == "mux"
-            and model.asset_id
+            and (model.asset_id or model.upload_id)
             and _settings
             and _settings.mux_enabled
         ):
             mux = MuxClient.from_settings(_settings)
             try:
-                await anyio.to_thread.run_sync(mux.delete_asset, model.asset_id)
-            except MuxError:
-                pass  # best effort; it can also be removed in the Mux dashboard
+                await anyio.to_thread.run_sync(
+                    remove_from_mux, mux, model.asset_id, model.upload_id
+                )
             finally:
                 mux.close()
         await super().after_model_delete(model, request)

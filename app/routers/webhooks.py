@@ -4,12 +4,13 @@ import json
 import logging
 from typing import Annotated
 
+import anyio
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.db import get_db
-from app.services.mux import verify_webhook
+from app.services.mux import MuxClient, verify_webhook
 from app.services.video_sync import handle_webhook_event
 
 router = APIRouter(tags=["webhooks"])
@@ -34,5 +35,18 @@ async def mux_webhook(
         event = json.loads(body)
     except ValueError as e:
         raise HTTPException(400, "Body isn't JSON") from e
-    note = handle_webhook_event(db, event)
+    if not isinstance(event, dict):
+        raise HTTPException(400, "Body isn't a JSON object")
+
+    def process() -> str:
+        settings = get_settings()
+        mux = MuxClient.from_settings(settings) if settings.mux_enabled else None
+        try:
+            return handle_webhook_event(db, event, mux)
+        finally:
+            if mux:
+                mux.close()
+
+    # sync database / Mux work: keep it off the event loop
+    note = await anyio.to_thread.run_sync(process)
     log.info("Mux webhook %s: %s", event.get("type"), note)

@@ -13,8 +13,8 @@
 
       <p class="text-secondary">
         The file goes straight from your browser to Mux. When Mux has finished processing it (usually under a
-        minute for short videos), the episode or movie becomes playable on the site. Uploading replaces any video it
-        already had.
+        minute for short videos), the episode or movie switches to the new video. Until then it keeps playing its
+        current video, which is deleted only once the new one is ready.
       </p>
 
       <div class="mb-3">
@@ -65,13 +65,14 @@
     if (!opt.value || opt.dataset.type === "movie") { epRow.hidden = true; return; }
     epRow.hidden = false;
     const r = await fetch(`${base}/upload/episodes?title_id=${encodeURIComponent(opt.value)}`);
+    if (!r.ok || r.redirected) { epRow.hidden = true; return alert("Couldn't load episodes. Are you still logged in?"); }
     episodes = await r.json();
     for (const ep of episodes) epSel.add(new Option(ep.label + (ep.video ? "" : "  (no video)"), ep.id));
     epSel.dispatchEvent(new Event("change"));
   });
   epSel.addEventListener("change", () => {
     const ep = episodes.find((e) => e.id === epSel.value);
-    $("current-video").textContent = ep && ep.video ? "Current video (will be replaced): " + ep.video : "";
+    $("current-video").textContent = ep && ep.video ? "Current video (replaced once the new one is ready): " + ep.video : "";
   });
 
   go.addEventListener("click", async () => {
@@ -88,11 +89,17 @@
     const start = await r.json();
     if (!r.ok) { say(start.error || "Couldn't start the upload.", "danger"); go.disabled = false; return; }
 
+    const warn = (e) => { e.preventDefault(); e.returnValue = ""; };
+    window.addEventListener("beforeunload", warn); // don't close the tab mid-upload
+    const done = () => window.removeEventListener("beforeunload", warn);
+
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", start.upload_url);
     xhr.upload.onprogress = (e) => e.lengthComputable && bar(Math.round((e.loaded / e.total) * 100));
-    xhr.onerror = () => { say("Upload failed (network). Try again.", "danger"); go.disabled = false; };
+    xhr.onerror = () => { done(); say("Upload failed (network). Try again.", "danger"); go.disabled = false; };
+    xhr.onabort = () => { done(); say("Upload cancelled.", "warning"); go.disabled = false; };
     xhr.onload = () => {
+      done();
       if (xhr.status >= 300) { say("Mux rejected the upload (" + xhr.status + ").", "danger"); go.disabled = false; return; }
       bar(100); say("Uploaded. Mux is processing the video…");
       poll(start.video_id);
@@ -100,9 +107,17 @@
     xhr.send(file);
   });
 
-  async function poll(videoId) {
-    const r = await fetch(`${base}/upload/status/${videoId}`);
-    const s = await r.json();
+  async function poll(videoId, tries = 0) {
+    let r, s;
+    try {
+      r = await fetch(`${base}/upload/status/${videoId}`);
+      if (r.redirected) { say("Your admin login expired. Log in again; the upload continues at Mux.", "warning"); go.disabled = false; return; }
+      s = await r.json();
+    } catch {
+      if (tries < 5) return setTimeout(() => poll(videoId, tries + 1), 6000);
+      say("Lost contact with the server. Reload this page later to check.", "warning"); go.disabled = false; return;
+    }
+    if (!r.ok) { say(s.error || "This upload no longer exists.", "danger"); go.disabled = false; return; }
     if (s.status === "ready") {
       const mins = s.duration_sec ? ` (${Math.round(s.duration_sec / 60)} min)` : "";
       say("Ready! It's now playable on the site" + mins + ". The site may take up to a minute to show it.", "success");

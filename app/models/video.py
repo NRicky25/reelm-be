@@ -12,7 +12,7 @@ import enum
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Enum, Float, String, Text, func
+from sqlalchemy import DateTime, Enum, Float, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -56,6 +56,27 @@ class Video(Base):
 
     # external
     url: Mapped[str | None] = mapped_column(String(500))
+
+    # Where a new upload goes once Mux says it's ready. Until then the episode /
+    # movie keeps playing its current video; the swap happens in one step.
+    pending_episode_id: Mapped[str | None] = mapped_column(
+        ForeignKey(
+            "episodes.id",
+            ondelete="SET NULL",
+            name="fk_videos_pending_episode",
+            use_alter=True,
+        ),
+        index=True,
+    )
+    pending_title_id: Mapped[str | None] = mapped_column(
+        ForeignKey(
+            "titles.id",
+            ondelete="SET NULL",
+            name="fk_videos_pending_title",
+            use_alter=True,
+        ),
+        index=True,
+    )
 
     duration_sec: Mapped[float | None] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(
