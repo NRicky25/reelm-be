@@ -212,6 +212,17 @@ def get_title(db: Session, slug: str) -> Title | None:
     )
 
 
+def get_titles(db: Session, slugs: list[str]) -> list[Title]:
+    """Several full titles in one go (a handful of queries, not a few per title)."""
+    if not slugs:
+        return []
+    return list(
+        db.scalars(
+            _titles_query(with_seasons=True).where(Title.slug.in_(slugs))
+        ).unique()
+    )
+
+
 def related_titles(db: Session, title: Title, limit: int = 12) -> list[TitleSummaryOut]:
     """Titles sharing genres, most overlap first; same type breaks ties."""
     mine = set(title.genres)

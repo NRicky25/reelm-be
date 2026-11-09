@@ -8,7 +8,9 @@ from fastapi import FastAPI
 from sqladmin import Admin
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
+from starlette.datastructures import FormData
 from starlette.middleware import Middleware
+from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -45,12 +47,26 @@ class SameOriginMiddleware:
         await self.app(scope, receive, send)
 
 
-def setup_admin(app: FastAPI, engine: Engine, settings: Settings) -> Admin | None:
+class ReelmAdmin(Admin):
+    """SQLAdmin with plain form handling for our "Upload …" file fields.
+
+    SQLAdmin assumes every file input is a file column on the model and, when
+    editing with no file chosen, calls getattr(model, "poster_file") - which
+    doesn't exist (our files go to Supabase, see ImageUploadMixin) -> 500.
+    We pass the form through as-is; the mixin ignores empty file inputs.
+    """
+
+    @staticmethod
+    async def _handle_form_data(request: Request, obj: object = None) -> FormData:
+        return FormData((await request.form()).multi_items())
+
+
+def setup_admin(app: FastAPI, engine: Engine, settings: Settings) -> ReelmAdmin | None:
     """Mount the admin panel, or skip it (with a warning) if no password is configured."""
     if admin_password(settings) is None:
         log.warning("Admin panel disabled: set ADMIN_PASSWORD in .env to enable /admin")
         return None
-    admin = Admin(
+    admin = ReelmAdmin(
         app,
         engine,
         title="Reelm Admin",

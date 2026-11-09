@@ -18,7 +18,7 @@ API docs: http://localhost:8000/docs
 
 ```bash
 uv run pytest                                   # in-memory SQLite (seconds)
-TEST_DATABASE_URL="postgresql://..." uv run pytest   # same tests on Postgres, in a throwaway reelm_test schema
+TEST_DATABASE_URL="postgresql://..." uv run pytest   # same tests on Postgres, in a throwaway reelm_test schema (session pooler, port 5432)
 uv run ruff check . && uv run ruff format --check .
 ```
 
@@ -64,8 +64,10 @@ Defaults to a local `reelm.db` SQLite file. To use Supabase:
    `DATABASE_URL=...` with your password in place of `[YOUR-PASSWORD]` (encode `@` as `%40`, `#` as `%23`).
 2. `uv run alembic upgrade head` then `uv run python -m scripts.seed`.
 
-- **Row Level Security** is enabled on every table (migration `f263661d9129`). Supabase's public REST API can't
-  read or write them; the backend connects as the owner and isn't affected. **New tables need RLS too.**
+- **Row Level Security** is enabled on every table (migration `f263661d9129`), and the public API roles
+  (`anon`, `authenticated`) have no privileges on our tables, including tables created later (`a7c1d9e2b4f0`).
+  Supabase's public REST/GraphQL API can't read, write or even list them; the backend connects as the owner
+  and isn't affected. Still enable RLS on new tables (belt and braces).
 - Lists use JSON on SQLite and JSONB on Postgres. SQLite runs with foreign keys ON (but OFF during migrations,
   because SQLite rebuilds tables to alter them). Every episode / movie has its own `videos` row.
 - Latency: every page needs a few database round trips, so host the backend in the **same region** as the

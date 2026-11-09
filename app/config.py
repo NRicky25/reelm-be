@@ -66,10 +66,21 @@ class Settings(BaseSettings):
                 return "postgresql+psycopg://" + v[len(prefix) :]
         return v
 
-    @field_validator("catalog_today", mode="before")
+    @field_validator(
+        "catalog_today",
+        "admin_password",
+        "admin_secret_key",
+        "mux_token_id",
+        "mux_token_secret",
+        "mux_webhook_secret",
+        "supabase_url",
+        "supabase_service_role_key",
+        mode="before",
+    )
     @classmethod
-    def empty_today_is_none(cls, v: object) -> object:
-        return None if v == "" else v
+    def empty_is_unset(cls, v: object) -> object:
+        """An empty variable (e.g. `MUX_WEBHOOK_SECRET=`) means "not set"."""
+        return None if isinstance(v, str) and not v.strip() else v
 
 
 @lru_cache

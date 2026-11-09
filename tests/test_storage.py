@@ -27,6 +27,7 @@ PASSWORD = "test-password-123"
 BASE = "https://proj.supabase.co"
 JPEG = b"\xff\xd8\xff\xe0" + b"0" * 100
 PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 100
+OTHER_SLUG = "neon-teahouse"
 STILL = (
     Path(__file__).resolve().parents[2] / "reelm-fe" / "public" / "images" / "stills"
 )
@@ -37,6 +38,7 @@ class FakeStorage:
         self.objects: dict[str, bytes] = {}
         self.deleted: list[str] = []
         self.buckets: dict[str, dict] = {}
+        self.fail_folder: str | None = None  # uploads into this folder fail
 
     def handler(self, request: httpx.Request) -> httpx.Response:
         path, method = request.url.path, request.method
@@ -50,8 +52,14 @@ class FakeStorage:
             body = json.loads(request.content)
             self.buckets[body["name"]] = body
             return httpx.Response(200, json={"name": body["name"]})
+        if method == "PUT" and path.startswith("/storage/v1/bucket/"):
+            name = path.rsplit("/", 1)[1]
+            self.buckets[name] = json.loads(request.content)
+            return httpx.Response(200, json={"message": "Successfully updated"})
         prefix = "/storage/v1/object/images/"
         if method == "POST" and path.startswith(prefix):
+            if self.fail_folder and path[len(prefix) :].startswith(self.fail_folder):
+                return httpx.Response(500, json={"message": "boom"})
             self.objects[path[len(prefix) :]] = request.content
             return httpx.Response(200, json={"Key": path})
         if method == "DELETE" and path == "/storage/v1/object/images":
@@ -114,6 +122,13 @@ def test_bucket_is_created_once_and_public(fake_storage):
     }
 
 
+def test_bucket_made_by_hand_gets_fixed(fake_storage):
+    fake_storage.buckets["images"] = {"name": "images", "public": False}
+    fake_storage.client().ensure_bucket()
+    assert fake_storage.buckets["images"]["public"] is True
+    assert fake_storage.buckets["images"]["file_size_limit"] == MAX_BYTES
+
+
 # ───────── admin uploads ─────────
 @pytest.fixture
 def image_admin(
@@ -162,18 +177,24 @@ def test_upload_poster_on_edit(image_admin, db, fake_storage):
     assert old_poster != t.poster_url
 
 
-def test_replacing_an_uploaded_image_deletes_the_old_one_but_not_shared_stills(
+def bucket_url(path: str) -> str:
+    return f"{BASE}/storage/v1/object/public/images/{path}"
+
+
+def test_replacing_an_image_deletes_it_only_when_nothing_else_uses_it(
     image_admin, db, fake_storage
 ):
+    shared = bucket_url("stills/deep-cave.jpg")
     t = get_title(db, "hollow-tide")
-    t.poster_url = f"{BASE}/storage/v1/object/public/images/stills/deep-cave.jpg"  # shared demo still
+    other = get_title(db, OTHER_SLUG)
+    t.poster_url = other.poster_url = shared  # a demo still used by two titles
     db.commit()
     image_admin.post(
         f"/admin/title/edit/{t.id}",
         data=title_form(t),
         files={"poster_file": ("a.jpg", JPEG, "image/jpeg")},
     )
-    assert fake_storage.deleted == [], "shared stills are never deleted"
+    assert fake_storage.deleted == [], "still used by another title"
 
     t = get_title(db, "hollow-tide")
     first_upload = fake_storage.client().path_from_url(t.poster_url)
@@ -183,6 +204,161 @@ def test_replacing_an_uploaded_image_deletes_the_old_one_but_not_shared_stills(
         files={"poster_file": ("b.png", PNG, "image/png")},
     )
     assert fake_storage.deleted == [first_upload]
+
+
+def multipart_with_empty_files(fields: dict, file_fields: list[str]) -> dict:
+    """A form exactly as a browser sends it when no file was chosen (filename="").
+
+    httpx drops empty filenames, so the body is built by hand.
+    """
+    b = "reelmboundary"
+    parts = [
+        f'--{b}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'
+        for k, v in fields.items()
+    ]
+    parts += [
+        f'--{b}\r\nContent-Disposition: form-data; name="{k}"; filename=""\r\n'
+        "Content-Type: application/octet-stream\r\n\r\n\r\n"
+        for k in file_fields
+    ]
+    parts.append(f"--{b}--\r\n")
+    return {
+        "content": "".join(parts).encode(),
+        "headers": {"Content-Type": f"multipart/form-data; boundary={b}"},
+    }
+
+
+def episode_form(ep: Episode, **overrides) -> dict:
+    data = {
+        "season": str(ep.season_id),
+        "number": str(ep.number),
+        "name": ep.name,
+        "description": ep.description,
+        "release_date": ep.release_date.isoformat(),
+        "duration_sec": str(ep.duration_sec),
+        "thumb_url": ep.thumb_url or "",
+        "intro_start_sec": str(ep.intro_start_sec),
+        "intro_end_sec": str(ep.intro_end_sec),
+        "video": ep.video_id,
+    }
+    return data | overrides
+
+
+def test_browser_save_without_choosing_a_file(image_admin, db, fake_storage):
+    """Regression: an empty file input on edit used to crash SQLAdmin (500)."""
+    t = get_title(db, "hollow-tide")
+    r = image_admin.post(
+        f"/admin/title/edit/{t.id}",
+        **multipart_with_empty_files(
+            title_form(t, name="Hollow Tide Renamed"), ["poster_file", "backdrop_file"]
+        ),
+        follow_redirects=False,
+    )
+    assert r.status_code in (302, 303), r.text[:300]
+    assert get_title(db, "hollow-tide").name == "Hollow Tide Renamed"
+
+    ep = db.get(Episode, "hollow-tide-s1e1")
+    r = image_admin.post(
+        f"/admin/episode/edit/{ep.id}",
+        **multipart_with_empty_files(episode_form(ep, name="Renamed"), ["thumb_file"]),
+        follow_redirects=False,
+    )
+    assert r.status_code in (302, 303), r.text[:300]
+    db.expire_all()
+    assert db.get(Episode, "hollow-tide-s1e1").name == "Renamed"
+    assert fake_storage.objects == {}
+
+
+def test_create_with_upload(image_admin, db, fake_storage):
+    t = get_title(db, "hollow-tide")
+    form = title_form(t, name="Brand New", slug="brand-new")
+    form.pop("video", None)  # a video belongs to one title
+    r = image_admin.post(
+        "/admin/title/create",
+        data=form,
+        files={"poster_file": ("p.jpg", JPEG, "image/jpeg")},
+        follow_redirects=False,
+    )
+    assert r.status_code in (302, 303), r.text[:300]
+    new = get_title(db, "brand-new")
+    assert fake_storage.client().path_from_url(new.poster_url) in fake_storage.objects
+    assert fake_storage.deleted == []
+
+
+def test_failed_second_upload_removes_the_first(image_admin, db, fake_storage):
+    fake_storage.fail_folder = "backdrops/"
+    t = get_title(db, "hollow-tide")
+    before = (t.poster_url, t.backdrop_url)
+    r = image_admin.post(
+        f"/admin/title/edit/{t.id}",
+        data=title_form(t),
+        files={
+            "poster_file": ("p.jpg", JPEG, "image/jpeg"),
+            "backdrop_file": ("b.jpg", JPEG, "image/jpeg"),
+        },
+        follow_redirects=False,
+    )
+    assert r.status_code == 400
+    t = get_title(db, "hollow-tide")
+    assert (t.poster_url, t.backdrop_url) == before
+    assert fake_storage.objects == {}, "the poster that did upload was removed again"
+
+
+def test_failed_save_removes_the_new_upload(image_admin, db, fake_storage):
+    t = get_title(db, "hollow-tide")
+    r = image_admin.post(
+        f"/admin/title/edit/{t.id}",
+        data=title_form(t, slug=OTHER_SLUG),  # taken -> the save is refused
+        files={"poster_file": ("p.jpg", JPEG, "image/jpeg")},
+        follow_redirects=False,
+    )
+    assert r.status_code == 400 and "already used" in r.text
+    assert fake_storage.objects == {}
+
+
+def test_image_urls_from_other_sites_are_refused(image_admin, db, fake_storage):
+    t = get_title(db, "hollow-tide")
+    r = image_admin.post(
+        f"/admin/title/edit/{t.id}",
+        data=title_form(t, poster_url="https://imgur.example/cat.jpg"),
+        follow_redirects=False,
+    )
+    assert r.status_code == 400 and "other websites" in r.text
+    for ok in ("/images/stills/deep-cave.jpg", bucket_url("posters/x.jpg")):
+        r = image_admin.post(
+            f"/admin/title/edit/{t.id}",
+            data=title_form(get_title(db, "hollow-tide"), poster_url=ok),
+            follow_redirects=False,
+        )
+        assert r.status_code in (302, 303), (ok, r.text[:300])
+
+
+def test_deleting_a_title_deletes_its_images(image_admin, db, fake_storage):
+    st = fake_storage.client()
+    poster = st.upload("posters", JPEG)
+    thumb = st.upload("thumbnails", JPEG)
+    shared = bucket_url("stills/deep-cave.jpg")
+    get_title(db, OTHER_SLUG).backdrop_url = shared  # used elsewhere too
+    db.commit()
+    t = get_title(db, "hollow-tide")
+    t.poster_url, t.backdrop_url = poster, shared
+    db.get(Episode, "hollow-tide-s1e1").thumb_url = thumb
+    db.commit()
+
+    r = image_admin.delete(f"/admin/title/delete?pks={t.id}")
+    assert r.status_code == 200, r.text[:300]
+    assert sorted(fake_storage.deleted) == sorted(
+        [st.path_from_url(poster), st.path_from_url(thumb)]
+    )
+
+
+def test_deleting_an_episode_deletes_its_thumbnail(image_admin, db, fake_storage):
+    st = fake_storage.client()
+    thumb = st.upload("thumbnails", JPEG)
+    db.get(Episode, "hollow-tide-s1e2").thumb_url = thumb
+    db.commit()
+    image_admin.delete("/admin/episode/delete?pks=hollow-tide-s1e2")
+    assert fake_storage.deleted == [st.path_from_url(thumb)]
 
 
 def test_bad_image_is_rejected_and_nothing_changes(image_admin, db, fake_storage):
@@ -202,11 +378,13 @@ def test_bad_image_is_rejected_and_nothing_changes(image_admin, db, fake_storage
 def test_no_file_keeps_current_image(image_admin, db, fake_storage):
     t = get_title(db, "hollow-tide")
     before = t.poster_url
-    image_admin.post(
+    r = image_admin.post(
         f"/admin/title/edit/{t.id}",
         data=title_form(t),
         files={"poster_file": ("", b"", "application/octet-stream")},
+        follow_redirects=False,
     )
+    assert r.status_code in (302, 303), r.text[:300]
     assert (
         get_title(db, "hollow-tide").poster_url == before and fake_storage.objects == {}
     )
@@ -216,18 +394,7 @@ def test_episode_thumbnail_upload(image_admin, db, fake_storage):
     ep = db.get(Episode, "hollow-tide-s1e1")
     r = image_admin.post(
         f"/admin/episode/edit/{ep.id}",
-        data={
-            "season": str(ep.season_id),
-            "number": str(ep.number),
-            "name": ep.name,
-            "description": ep.description,
-            "release_date": ep.release_date.isoformat(),
-            "duration_sec": str(ep.duration_sec),
-            "thumb_url": ep.thumb_url or "",
-            "intro_start_sec": str(ep.intro_start_sec),
-            "intro_end_sec": str(ep.intro_end_sec),
-            "video": ep.video_id,
-        },
+        data=episode_form(ep),
         files={"thumb_file": ("t.jpg", JPEG, "image/jpeg")},
         follow_redirects=False,
     )

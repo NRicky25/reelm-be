@@ -144,6 +144,34 @@ def test_full_titles_by_slug(client):
     assert client.get("/titles", params={"full": "true"}).status_code == 422
 
 
+def test_full_titles_query_count_does_not_grow_with_slugs(client, db):
+    """Regression: full=true used to run a few queries per slug (slow over the network)."""
+    from sqlalchemy import event
+
+    from app.models import Title
+
+    slugs = [t.slug for t in db.query(Title).order_by(Title.slug)]
+    statements: list[str] = []
+
+    def count(_conn, _cursor, statement, *_args):
+        statements.append(statement)
+
+    engine = db.get_bind()
+    event.listen(engine, "before_cursor_execute", count)
+    try:
+        counts = []
+        for n in (2, len(slugs)):
+            statements.clear()
+            r = client.get(
+                "/titles", params={"slugs": ",".join(slugs[:n]), "full": "true"}
+            )
+            assert len(r.json()) == n
+            counts.append(len(statements))
+    finally:
+        event.remove(engine, "before_cursor_execute", count)
+    assert counts[0] == counts[1], counts
+
+
 def test_new_movies_and_mixed_types(client):
     movies = client.get("/titles", params={"type": "movie", "list": "new"}).json()
     added = [date.fromisoformat(t["addedAt"]) for t in movies]

@@ -5,13 +5,13 @@ from typing import Annotated, Literal
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.db import get_db
+from app.db import get_read_db
 from app.models import TitleType
 from app.schemas.catalog import PlayableOut, TitleOut, TitleSummaryOut
 from app.services import catalog
 
 router = APIRouter(tags=["catalogue"])
-DB = Annotated[Session, Depends(get_db)]
+DB = Annotated[Session, Depends(get_read_db)]
 
 # Omit None fields so responses match the frontend's optional (`?:`) fields.
 OPTS = {"response_model_exclude_none": True, "response_model_by_alias": True}
@@ -57,9 +57,8 @@ def list_titles(
     summaries = catalog.list_titles(db, filters)
     if not full:
         return summaries
-    return [
-        catalog.title_out(t) for s in summaries if (t := catalog.get_title(db, s.slug))
-    ]
+    by_slug = {t.slug: t for t in catalog.get_titles(db, [s.slug for s in summaries])}
+    return [catalog.title_out(by_slug[s.slug]) for s in summaries if s.slug in by_slug]
 
 
 @router.get("/titles/{slug}", response_model=TitleOut, **OPTS)

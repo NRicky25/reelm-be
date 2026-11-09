@@ -22,13 +22,18 @@ class Base(DeclarativeBase):
 def make_engine(url: str, *, enforce_foreign_keys: bool = True, **kwargs) -> Engine:
     parsed = make_url(url)
     connect_args: dict = {}
+    options: dict = {"pool_pre_ping": True}
     if parsed.get_backend_name() == "sqlite":
         connect_args["check_same_thread"] = False
-    elif parsed.port == 6543:
-        # Supabase transaction pooler doesn't support prepared statements.
-        connect_args["prepare_threshold"] = None
+    else:
+        # Supabase's pooler has a limited number of client slots and drops idle
+        # connections; keep the pool small and recycle before that happens.
+        options |= {"pool_size": 5, "max_overflow": 5, "pool_recycle": 300}
+        if parsed.port == 6543:
+            # Supabase transaction pooler doesn't support prepared statements.
+            connect_args["prepare_threshold"] = None
 
-    engine = create_engine(url, connect_args=connect_args, pool_pre_ping=True, **kwargs)
+    engine = create_engine(url, connect_args=connect_args, **(options | kwargs))
 
     if parsed.get_backend_name() == "sqlite" and enforce_foreign_keys:
         # SQLite ignores foreign keys unless asked, so ON DELETE CASCADE /
@@ -44,7 +49,21 @@ engine = make_engine(get_settings().database_url)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 
+# Read-only requests skip BEGIN/ROLLBACK: two fewer network round trips each.
+ReadSessionLocal = sessionmaker(
+    bind=engine.execution_options(isolation_level="AUTOCOMMIT"),
+    autoflush=False,
+    expire_on_commit=False,
+)
+
+
 def get_db() -> Iterator[Session]:
     """FastAPI dependency: one session per request."""
     with SessionLocal() as session:
+        yield session
+
+
+def get_read_db() -> Iterator[Session]:
+    """FastAPI dependency for endpoints that only read (the public catalogue)."""
+    with ReadSessionLocal() as session:
         yield session

@@ -7,8 +7,9 @@ Errors raised as ValueError in the hooks below are shown to the admin as a
 message on the form (or the list page, for deletes).
 """
 
+import logging
 import re
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import Any, ClassVar, TypeVar
 
 import anyio
@@ -22,9 +23,15 @@ from wtforms import FileField, Form, StringField, validators
 from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
 from app.services.mux import MuxClient
-from app.services.storage import StorageError, SupabaseStorage
+from app.services.storage import (
+    MAX_BYTES,
+    StorageError,
+    SupabaseStorage,
+    public_prefix,
+)
 from app.services.video_sync import delete_videos_everywhere, remove_from_mux
 
+log = logging.getLogger(__name__)
 T = TypeVar("T")
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
 DEFAULT_COLORS = ["#3a3a4a", "#22222b"]
@@ -190,17 +197,72 @@ VIDEO_AJAX = {
 }
 
 
+def _image_urls_in_use(session: Session, urls: list[str]) -> set[str]:
+    """Which of these URLs a title or episode still shows."""
+    used: set[str] = set()
+    for column in (Title.poster_url, Title.backdrop_url, Episode.thumb_url):
+        used.update(session.scalars(select(column).where(column.in_(urls))))
+    return used
+
+
+def delete_unused_images(session: Session, urls: list[str]) -> None:
+    """Best effort: remove bucket images that no title/episode uses any more.
+
+    Images outside our bucket (e.g. /images/... paths) are never touched, and an
+    image still used by another row (shared demo stills, a reused URL) is kept.
+    """
+    urls = [u for u in dict.fromkeys(urls) if u]
+    if not urls or not (_settings and _settings.storage_enabled):
+        return
+    storage = SupabaseStorage.from_settings(_settings)
+    try:
+        ours = {u: p for u in urls if (p := storage.path_from_url(u))}
+        if not ours:
+            return
+        used = _image_urls_in_use(session, list(ours))
+        storage.delete([p for u, p in ours.items() if u not in used])
+    except StorageError:
+        log.warning("Couldn't delete unused images %s", urls, exc_info=True)
+    finally:
+        storage.close()
+
+
+def check_image_url(label: str, url: str | None) -> None:
+    """Image URLs must be a site path (/images/...) or point into our bucket.
+
+    The frontend only loads images from those places; anything else would break
+    every page that shows the title.
+    """
+    if not url:
+        return
+    if url.startswith("/") and not url.startswith("//"):
+        return
+    if (
+        _settings
+        and _settings.supabase_url
+        and url.startswith(
+            public_prefix(_settings.supabase_url, _settings.supabase_bucket)
+        )
+    ):
+        return
+    raise ValueError(
+        f"{label}: upload a file, or use a path like /images/stills/forest-bow.jpg. "
+        "Images from other websites can't be shown."
+    )
+
+
 class ImageUploadMixin:
     """Adds "Upload …" file fields that send images to Supabase Storage.
 
     `image_fields` maps a form field to (label, model URL attribute, storage folder).
-    The URL fields stay editable too (paste a link instead of uploading).
-    A replaced image is deleted after the save succeeds, unless it's one of the
-    shared demo stills (several titles use the same still).
+    The URL fields stay editable too (a site path or a URL from our bucket).
+
+    Files are uploaded *before* the database save (so no DB connection waits on
+    the upload) and removed again if the save fails. Replaced images are deleted
+    after a successful save, unless another row still uses them.
     """
 
     image_fields: ClassVar[dict[str, tuple[str, str, str]]] = {}
-    SHARED_FOLDERS: ClassVar[tuple[str, ...]] = ("stills/",)
 
     async def scaffold_form(self, rules: list[str] | None = None) -> type[Form]:
         base = await super().scaffold_form(rules)  # type: ignore[misc]
@@ -217,19 +279,17 @@ class ImageUploadMixin:
         }
         return type(f"{base.__name__}WithImages", (base,), extra)
 
-    async def on_model_change(
-        self, data: dict, model: Any, is_created: bool, request: Request
-    ) -> None:
-        uploads: list[tuple[str, str, bytes]] = []
+    async def _upload_files(self, data: dict) -> list[str]:
+        """Upload chosen files and put their URLs into `data`. Returns the new URLs."""
+        files: list[tuple[str, str, bytes]] = []
         for name, (_label, attr, folder) in self.image_fields.items():
             file = data.pop(name, None)
             if file is not None and getattr(file, "filename", None):
-                content = await file.read()
+                content = await file.read(MAX_BYTES + 1)  # enough to spot "too large"
                 if content:
-                    uploads.append((attr, folder, content))
-        await super().on_model_change(data, model, is_created, request)  # type: ignore[misc]
-        if not uploads:
-            return
+                    files.append((attr, folder, content))
+        if not files:
+            return []
         if not (_settings and _settings.storage_enabled):
             raise ValueError(
                 "Image uploads need SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env."
@@ -237,11 +297,19 @@ class ImageUploadMixin:
 
         def upload_all() -> list[tuple[str, str]]:
             storage = SupabaseStorage.from_settings(_settings)
+            done: list[tuple[str, str]] = []
             try:
-                return [
-                    (attr, storage.upload(folder, content))
-                    for attr, folder, content in uploads
-                ]
+                for attr, folder, content in files:
+                    done.append((attr, storage.upload(folder, content)))
+                return done
+            except StorageError:
+                # don't leave the first image behind if the second one fails
+                paths = [storage.path_from_url(url) for _, url in done]
+                try:
+                    storage.delete([p for p in paths if p])
+                except StorageError:
+                    pass
+                raise
             finally:
                 storage.close()
 
@@ -249,43 +317,90 @@ class ImageUploadMixin:
             results = await anyio.to_thread.run_sync(upload_all)
         except StorageError as e:
             raise ValueError(str(e)) from e
-        replaced = []
         for attr, url in results:
-            old = getattr(model, attr, None) if not is_created else None
-            replaced.append(old)
-            data[attr] = url  # SQLAdmin applies `data` to the model after this hook
-            setattr(model, attr, url)
-        request.state.replaced_images = [u for u in replaced if u]
+            data[attr] = (
+                url  # SQLAdmin applies `data` to the model after on_model_change
+            )
+        return [url for _, url in results]
+
+    async def _save_with_uploads(
+        self, data: dict, save: Callable[[], Awaitable[Any]]
+    ) -> Any:
+        new_urls = await self._upload_files(data)
+        try:
+            return await save()
+        except BaseException:
+            if new_urls:  # the save failed: nothing uses these images
+                await self.in_thread(lambda s: delete_unused_images(s, new_urls))  # type: ignore[attr-defined]
+            raise
+
+    async def insert_model(self, request: Request, data: dict) -> Any:
+        parent = super()
+        return await self._save_with_uploads(
+            data,
+            lambda: parent.insert_model(request, data),  # type: ignore[attr-defined]
+        )
+
+    async def update_model(self, request: Request, pk: str, data: dict) -> Any:
+        parent = super()
+        return await self._save_with_uploads(
+            data,
+            lambda: parent.update_model(request, pk, data),  # type: ignore[attr-defined]
+        )
+
+    async def on_model_change(
+        self, data: dict, model: Any, is_created: bool, request: Request
+    ) -> None:
+        replaced = []
+        for label, attr, _folder in self.image_fields.values():
+            if attr not in data:
+                continue
+            check_image_url(label.removeprefix("Upload ").capitalize(), data[attr])
+            old = None if is_created else getattr(model, attr, None)
+            if old and old != data[attr]:
+                replaced.append(old)
+        await super().on_model_change(data, model, is_created, request)  # type: ignore[misc]
+        request.state.replaced_images = replaced
 
     async def after_model_change(
         self, data: dict, model: Any, is_created: bool, request: Request
     ):
         old_urls = getattr(request.state, "replaced_images", [])
-        if old_urls and _settings and _settings.storage_enabled:
-
-            def delete_old() -> None:
-                storage = SupabaseStorage.from_settings(_settings)
-                try:
-                    paths = [storage.path_from_url(u) for u in old_urls]
-                    storage.delete(
-                        [
-                            p
-                            for p in paths
-                            if p and not p.startswith(self.SHARED_FOLDERS)
-                        ]
-                    )
-                finally:
-                    storage.close()
-
-            try:
-                await anyio.to_thread.run_sync(delete_old)
-            except StorageError:
-                pass  # an unused old image is harmless
+        if old_urls:
+            await self.in_thread(lambda s: delete_unused_images(s, old_urls))  # type: ignore[attr-defined]
         return await super().after_model_change(data, model, is_created, request)  # type: ignore[misc]
 
 
+class DeletesOwnImagesMixin:
+    """Deleting a title/season/episode removes its uploaded images (if unused elsewhere)."""
+
+    def image_urls_for(self, session: Session, model: Any) -> list[str]:
+        raise NotImplementedError
+
+    async def on_model_delete(self, model: Any, request: Request) -> None:
+        await super().on_model_delete(model, request)  # type: ignore[misc]
+        request.state.images_to_delete = await self.in_thread(  # type: ignore[attr-defined]
+            lambda s: self.image_urls_for(s, model)
+        )
+
+    async def after_model_delete(self, model: Any, request: Request) -> None:
+        urls = getattr(request.state, "images_to_delete", [])
+        if urls:
+            await self.in_thread(lambda s: delete_unused_images(s, urls))  # type: ignore[attr-defined]
+        await super().after_model_delete(model, request)  # type: ignore[misc]
+
+
+def _episode_thumbs(session: Session, *where: Any) -> list[str]:
+    return [u for u in session.scalars(select(Episode.thumb_url).where(*where)) if u]
+
+
 class TitleAdmin(
-    DeletesOwnVideosMixin, ImageUploadMixin, CsvFieldsMixin, BaseAdmin, model=Title
+    DeletesOwnImagesMixin,
+    DeletesOwnVideosMixin,
+    ImageUploadMixin,
+    CsvFieldsMixin,
+    BaseAdmin,
+    model=Title,
 ):
     name = "Title"
     name_plural = "Titles"
@@ -335,7 +450,7 @@ class TitleAdmin(
         "sub": {"description": "Anime only: a subtitled version exists."},
         "dub": {"description": "Anime only: a dubbed version exists."},
         "poster_url": {
-            "description": "Image URL or path, e.g. /images/stills/forest-bow.jpg"
+            "description": "Filled in by the upload below, or a path like /images/stills/forest-bow.jpg"
         },
         "poster_focus_x": {
             "description": "0–100: where to centre when cropping a wide image into a tall poster.",
@@ -457,8 +572,18 @@ class TitleAdmin(
     def video_ids_for(self, session: Session, model: Title) -> list[str]:
         return _video_ids_of_titles(session, [model.id])
 
+    def image_urls_for(self, session: Session, model: Title) -> list[str]:
+        own = session.execute(
+            select(Title.poster_url, Title.backdrop_url).where(Title.id == model.id)
+        ).one_or_none()
+        seasons = select(Season.id).where(Season.title_id == model.id)
+        thumbs = _episode_thumbs(session, Episode.season_id.in_(seasons))
+        return [u for u in (*(own or ()), *thumbs) if u]
 
-class SeasonAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Season):
+
+class SeasonAdmin(
+    DeletesOwnImagesMixin, DeletesOwnVideosMixin, BaseAdmin, model=Season
+):
     name = "Season"
     name_plural = "Seasons"
     icon = "fa-solid fa-layer-group"
@@ -479,8 +604,17 @@ class SeasonAdmin(DeletesOwnVideosMixin, BaseAdmin, model=Season):
         pending = _pending_uploads(session, episode_ids=[e for e, _ in episodes])
         return [v for v in (*(v for _, v in episodes), *pending) if v]
 
+    def image_urls_for(self, session: Session, model: Season) -> list[str]:
+        return _episode_thumbs(session, Episode.season_id == model.id)
 
-class EpisodeAdmin(DeletesOwnVideosMixin, ImageUploadMixin, BaseAdmin, model=Episode):
+
+class EpisodeAdmin(
+    DeletesOwnImagesMixin,
+    DeletesOwnVideosMixin,
+    ImageUploadMixin,
+    BaseAdmin,
+    model=Episode,
+):
     name = "Episode"
     name_plural = "Episodes"
     icon = "fa-solid fa-tv"
@@ -541,6 +675,9 @@ class EpisodeAdmin(DeletesOwnVideosMixin, ImageUploadMixin, BaseAdmin, model=Epi
         return [
             v for v in (vid, *_pending_uploads(session, episode_ids=[model.id])) if v
         ]
+
+    def image_urls_for(self, session: Session, model: Episode) -> list[str]:
+        return _episode_thumbs(session, Episode.id == model.id)
 
 
 class GenreAdmin(BaseAdmin, model=Genre):

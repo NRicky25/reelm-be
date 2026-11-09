@@ -8,6 +8,7 @@ Docs: https://supabase.com/docs/reference/api (Storage API)
 
 import uuid
 from typing import Any
+from urllib.parse import quote, unquote
 
 import httpx
 
@@ -16,6 +17,11 @@ from app.config import Settings
 # What the admin may upload, and how big (posters/backdrops; videos go to Mux).
 ALLOWED_TYPES = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
 MAX_BYTES = 8 * 1024 * 1024
+
+
+def public_prefix(supabase_url: str, bucket: str) -> str:
+    """Start of every public URL in the bucket."""
+    return f"{supabase_url.rstrip('/')}/storage/v1/object/public/{bucket}/"
 
 
 class StorageError(RuntimeError):
@@ -82,36 +88,62 @@ class SupabaseStorage:
             else None
         )
 
+    def bucket_settings(self) -> dict[str, Any]:
+        return {
+            "public": True,
+            "file_size_limit": MAX_BYTES,
+            "allowed_mime_types": list(ALLOWED_TYPES),
+        }
+
     def ensure_bucket(self) -> None:
-        """Create the public image bucket if it doesn't exist yet."""
+        """Create the public image bucket, or fix its settings if it was made by hand."""
+        wanted = self.bucket_settings()
         try:
-            self._call("GET", f"/bucket/{self.bucket}")
-            return
+            current = self._call("GET", f"/bucket/{self.bucket}") or {}
         except StorageError as e:
             if e.status_code not in (400, 404):
                 raise
-        self._call(
-            "POST",
-            "/bucket",
-            json={
-                "id": self.bucket,
-                "name": self.bucket,
-                "public": True,
-                "file_size_limit": MAX_BYTES,
-                "allowed_mime_types": list(ALLOWED_TYPES),
-            },
-        )
+            self._call(
+                "POST",
+                "/bucket",
+                json={"id": self.bucket, "name": self.bucket, **wanted},
+            )
+            return
+        if (
+            current.get("public") is not True
+            or current.get("file_size_limit") != MAX_BYTES
+            or set(current.get("allowed_mime_types") or []) != set(ALLOWED_TYPES)
+        ):
+            self._call(
+                "PUT", f"/bucket/{self.bucket}", json={"id": self.bucket, **wanted}
+            )
+
+    @property
+    def prefix(self) -> str:
+        return public_prefix(self.base, self.bucket)
 
     def public_url(self, path: str) -> str:
-        return f"{self.base}/storage/v1/object/public/{self.bucket}/{path}"
+        return self.prefix + quote(path)
 
     def path_from_url(self, url: str | None) -> str | None:
         """The object path, if this URL points into our bucket (else None)."""
-        prefix = f"{self.base}/storage/v1/object/public/{self.bucket}/"
-        return url[len(prefix) :] if url and url.startswith(prefix) else None
+        if not url or not url.startswith(self.prefix):
+            return None
+        return unquote(url[len(self.prefix) :]) or None
 
-    def upload(self, folder: str, data: bytes, *, name: str | None = None) -> str:
-        """Upload an image and return its public URL. Validates type and size."""
+    def upload(
+        self,
+        folder: str,
+        data: bytes,
+        *,
+        name: str | None = None,
+        max_age: int = 31536000,
+    ) -> str:
+        """Upload an image and return its public URL. Validates type and size.
+
+        Generated names never change, so they're cached for a year; pass a short
+        `max_age` when re-uploading under a fixed `name`.
+        """
         if len(data) > MAX_BYTES:
             raise StorageError(
                 f"Image is too large (max {MAX_BYTES // (1024 * 1024)} MB)."
@@ -127,7 +159,7 @@ class SupabaseStorage:
             headers={
                 "Content-Type": content_type,
                 "x-upsert": "true",
-                "cache-control": "max-age=31536000",  # names are unique, so cache "forever"
+                "cache-control": f"max-age={max_age}",
             },
         )
         return self.public_url(path)
