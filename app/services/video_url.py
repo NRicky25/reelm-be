@@ -7,10 +7,15 @@ from app.models import Video, VideoProvider, VideoStatus
 
 
 def playback_url(video: Video | None) -> str | None:
-    if video is None or video.status != VideoStatus.ready:
+    if video is None:
         return None
-    if video.provider == VideoProvider.mux and video.playback_id:
+    if video.provider == VideoProvider.external:
+        # A plain URL is playable as soon as it's set; there's no processing step.
+        return video.url or None
+    if (
+        video.provider == VideoProvider.mux
+        and video.status == VideoStatus.ready
+        and video.playback_id
+    ):
         return f"https://stream.mux.com/{video.playback_id}.m3u8"
-    if video.provider == VideoProvider.external and video.url:
-        return video.url
     return None

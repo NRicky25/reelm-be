@@ -42,9 +42,15 @@ tests/                 pytest (in-memory SQLite)
 
 ## Database
 
-Defaults to `sqlite:///./reelm.db`. To use Supabase, set `DATABASE_URL` to its Postgres
-connection string (driver `postgresql+psycopg://`) and run the migrations + seed again.
-Lists are stored as JSON columns so the same models work on SQLite and Postgres.
+Defaults to a `reelm.db` SQLite file in this folder. To use Supabase:
+
+1. In Supabase: **Connect → Session pooler** (port 5432) and copy the connection string.
+2. Put it in `.env` as `DATABASE_URL=...`. `postgres://` / `postgresql://` URLs are switched to
+   the psycopg 3 driver automatically. (The transaction pooler on port 6543 also works.)
+3. Run `uv run alembic upgrade head` and `uv run python -m scripts.seed`.
+
+Lists use JSON on SQLite and JSONB on Postgres. SQLite runs with foreign keys ON so deletes behave
+the same as on Postgres. Every episode / movie has its own `videos` row.
 
 ## Videos
 

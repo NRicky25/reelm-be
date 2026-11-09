@@ -1,8 +1,8 @@
 """initial catalogue and videos
 
-Revision ID: 930997d4bca6
+Revision ID: be7f331a038e
 Revises:
-Create Date: 2026-11-09 20:04:13.137647
+Create Date: 2026-11-09 20:09:11.774638
 
 """
 
@@ -10,9 +10,10 @@ from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "930997d4bca6"
+revision: str = "be7f331a038e"
 down_revision: str | Sequence[str] | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -48,24 +49,31 @@ def upgrade() -> None:
                 native_enum=False,
                 length=20,
             ),
+            server_default="waiting",
             nullable=False,
         ),
         sa.Column("upload_id", sa.String(length=100), nullable=True),
         sa.Column("asset_id", sa.String(length=100), nullable=True),
         sa.Column("playback_id", sa.String(length=100), nullable=True),
+        sa.Column("error_message", sa.Text(), nullable=True),
         sa.Column("url", sa.String(length=500), nullable=True),
         sa.Column("duration_sec", sa.Float(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            nullable=False,
+        ),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("asset_id"),
+        sa.UniqueConstraint("upload_id"),
     )
-    with op.batch_alter_table("videos", schema=None) as batch_op:
-        batch_op.create_index(
-            batch_op.f("ix_videos_asset_id"), ["asset_id"], unique=False
-        )
-        batch_op.create_index(
-            batch_op.f("ix_videos_upload_id"), ["upload_id"], unique=False
-        )
-
     op.create_table(
         "titles",
         sa.Column("id", sa.String(length=40), nullable=False),
@@ -83,22 +91,59 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("name", sa.String(length=200), nullable=False),
-        sa.Column("description", sa.Text(), nullable=False),
+        sa.Column("description", sa.Text(), server_default="", nullable=False),
         sa.Column("year", sa.Integer(), nullable=False),
-        sa.Column("age_rating", sa.String(length=10), nullable=False),
+        sa.Column(
+            "age_rating", sa.String(length=10), server_default="All", nullable=False
+        ),
         sa.Column("sub", sa.Boolean(), nullable=True),
         sa.Column("dub", sa.Boolean(), nullable=True),
-        sa.Column("audio_languages", sa.JSON(), nullable=False),
-        sa.Column("subtitle_languages", sa.JSON(), nullable=False),
-        sa.Column("colors", sa.JSON(), nullable=False),
+        sa.Column(
+            "audio_languages",
+            sa.JSON().with_variant(
+                postgresql.JSONB(astext_type=sa.Text()), "postgresql"
+            ),
+            server_default=sa.text("'[]'"),
+            nullable=False,
+        ),
+        sa.Column(
+            "subtitle_languages",
+            sa.JSON().with_variant(
+                postgresql.JSONB(astext_type=sa.Text()), "postgresql"
+            ),
+            server_default=sa.text("'[]'"),
+            nullable=False,
+        ),
+        sa.Column(
+            "colors",
+            sa.JSON().with_variant(
+                postgresql.JSONB(astext_type=sa.Text()), "postgresql"
+            ),
+            server_default=sa.text('\'["#3a3a4a", "#22222b"]\''),
+            nullable=False,
+        ),
         sa.Column("poster_url", sa.String(length=500), nullable=True),
         sa.Column("backdrop_url", sa.String(length=500), nullable=True),
         sa.Column("poster_focus_x", sa.Integer(), nullable=True),
-        sa.Column("featured", sa.Boolean(), nullable=False),
-        sa.Column("staff_pick", sa.Boolean(), nullable=False),
-        sa.Column("added_at", sa.Date(), nullable=False),
-        sa.Column("studio", sa.String(length=120), nullable=False),
-        sa.Column("cast", sa.JSON(), nullable=False),
+        sa.Column("featured", sa.Boolean(), server_default=sa.false(), nullable=False),
+        sa.Column(
+            "staff_pick", sa.Boolean(), server_default=sa.false(), nullable=False
+        ),
+        sa.Column(
+            "added_at",
+            sa.Date(),
+            server_default=sa.text("(CURRENT_DATE)"),
+            nullable=False,
+        ),
+        sa.Column("studio", sa.String(length=120), server_default="", nullable=False),
+        sa.Column(
+            "cast_members",
+            sa.JSON().with_variant(
+                postgresql.JSONB(astext_type=sa.Text()), "postgresql"
+            ),
+            server_default=sa.text("'[]'"),
+            nullable=False,
+        ),
         sa.Column("duration_sec", sa.Integer(), nullable=True),
         sa.Column("intro_start_sec", sa.Integer(), nullable=True),
         sa.Column("intro_end_sec", sa.Integer(), nullable=True),
@@ -110,13 +155,7 @@ def upgrade() -> None:
         batch_op.create_index(
             batch_op.f("ix_titles_added_at"), ["added_at"], unique=False
         )
-        batch_op.create_index(
-            batch_op.f("ix_titles_featured"), ["featured"], unique=False
-        )
         batch_op.create_index(batch_op.f("ix_titles_slug"), ["slug"], unique=True)
-        batch_op.create_index(
-            batch_op.f("ix_titles_staff_pick"), ["staff_pick"], unique=False
-        )
         batch_op.create_index(batch_op.f("ix_titles_type"), ["type"], unique=False)
 
     op.create_table(
@@ -137,19 +176,24 @@ def upgrade() -> None:
         "title_genres",
         sa.Column("title_id", sa.String(length=40), nullable=False),
         sa.Column("genre_id", sa.Integer(), nullable=False),
-        sa.Column("position", sa.Integer(), nullable=False),
+        sa.Column("position", sa.Integer(), server_default="0", nullable=False),
         sa.ForeignKeyConstraint(["genre_id"], ["genres.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["title_id"], ["titles.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("title_id", "genre_id"),
     )
+    with op.batch_alter_table("title_genres", schema=None) as batch_op:
+        batch_op.create_index(
+            batch_op.f("ix_title_genres_genre_id"), ["genre_id"], unique=False
+        )
+
     op.create_table(
         "episodes",
         sa.Column("id", sa.String(length=120), nullable=False),
         sa.Column("season_id", sa.Integer(), nullable=False),
         sa.Column("number", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=200), nullable=False),
-        sa.Column("description", sa.Text(), nullable=False),
-        sa.Column("duration_sec", sa.Integer(), nullable=False),
+        sa.Column("description", sa.Text(), server_default="", nullable=False),
+        sa.Column("duration_sec", sa.Integer(), server_default="0", nullable=False),
         sa.Column("release_date", sa.Date(), nullable=False),
         sa.Column("thumb_url", sa.String(length=500), nullable=True),
         sa.Column("intro_start_sec", sa.Integer(), nullable=True),
@@ -179,6 +223,9 @@ def downgrade() -> None:
         batch_op.drop_index(batch_op.f("ix_episodes_release_date"))
 
     op.drop_table("episodes")
+    with op.batch_alter_table("title_genres", schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f("ix_title_genres_genre_id"))
+
     op.drop_table("title_genres")
     with op.batch_alter_table("seasons", schema=None) as batch_op:
         batch_op.drop_index(batch_op.f("ix_seasons_title_id"))
@@ -186,16 +233,10 @@ def downgrade() -> None:
     op.drop_table("seasons")
     with op.batch_alter_table("titles", schema=None) as batch_op:
         batch_op.drop_index(batch_op.f("ix_titles_type"))
-        batch_op.drop_index(batch_op.f("ix_titles_staff_pick"))
         batch_op.drop_index(batch_op.f("ix_titles_slug"))
-        batch_op.drop_index(batch_op.f("ix_titles_featured"))
         batch_op.drop_index(batch_op.f("ix_titles_added_at"))
 
     op.drop_table("titles")
-    with op.batch_alter_table("videos", schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f("ix_videos_upload_id"))
-        batch_op.drop_index(batch_op.f("ix_videos_asset_id"))
-
     op.drop_table("videos")
     op.drop_table("genres")
     # ### end Alembic commands ###

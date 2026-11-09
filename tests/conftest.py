@@ -4,12 +4,11 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 import app.models  # noqa: F401
-from app.db import Base, get_db
+from app.db import Base, get_db, make_engine
 from app.main import app as api
 from app.seed import load_catalogue, seed
 
@@ -21,9 +20,9 @@ def catalogue() -> list[dict]:
 
 @pytest.fixture
 def db(catalogue) -> Iterator[Session]:
-    engine = create_engine(
-        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
-    )
+    engine = make_engine(
+        "sqlite://", poolclass=StaticPool
+    )  # same setup as the app (FKs on)
     Base.metadata.create_all(engine)
     TestSession = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
     with TestSession() as session:

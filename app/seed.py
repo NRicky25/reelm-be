@@ -40,15 +40,18 @@ def seed(
 ) -> dict[str, int]:
     """Insert the catalogue. With reset=True, existing catalogue rows are removed first.
 
-    Without reset, titles whose slug already exists are skipped (safe to run twice).
+    Without reset, titles whose id or slug already exists are skipped (safe to
+    run twice). Every movie / episode gets its own Video row; rows are never
+    shared, so replacing one episode's video can't affect another.
     """
     if reset:
         clear_catalogue(db)
         db.flush()
 
     genres: dict[str, Genre] = {g.name: g for g in db.scalars(select(Genre))}
-    videos: dict[str, Video] = {v.url: v for v in db.scalars(select(Video)) if v.url}
-    existing = set(db.scalars(select(Title.slug)))
+    existing_ids = set(db.scalars(select(Title.id)))
+    existing_slugs = set(db.scalars(select(Title.slug)))
+    existing_episode_ids = set(db.scalars(select(Episode.id)))
     counts = {"titles": 0, "episodes": 0, "skipped": 0}
 
     def genre(name: str) -> Genre:
@@ -60,15 +63,15 @@ def seed(
     def video(url: str | None) -> Video | None:
         if not url:
             return None
-        if url not in videos:
-            videos[url] = Video(
-                provider=VideoProvider.external, url=url, status=VideoStatus.ready
-            )
-            db.add(videos[url])
-        return videos[url]
+        return Video(provider=VideoProvider.external, url=url, status=VideoStatus.ready)
 
     for t in titles:
-        if t["slug"] in existing:
+        episode_ids = {e["id"] for s in t.get("seasons") or [] for e in s["episodes"]}
+        if (
+            t["id"] in existing_ids
+            or t["slug"] in existing_slugs
+            or episode_ids & existing_episode_ids
+        ):
             counts["skipped"] += 1
             continue
         title = Title(
@@ -91,7 +94,7 @@ def seed(
             staff_pick=bool(t.get("staffPick")),
             added_at=date.fromisoformat(t["addedAt"]),
             studio=t.get("studio", ""),
-            cast=t.get("cast", []),
+            cast_members=t.get("cast", []),
             duration_sec=t.get("durationSec"),
             intro_start_sec=t.get("introStartSec"),
             intro_end_sec=t.get("introEndSec"),
