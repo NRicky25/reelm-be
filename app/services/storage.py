@@ -7,9 +7,11 @@ so only this backend (and the encoder, for videos) can add or remove files.
 """
 
 import os
+import time
 import uuid
+from collections.abc import Callable
 from pathlib import Path
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlsplit
 
 from app.config import Settings
 
@@ -26,6 +28,19 @@ def public_prefix(media_public_url: str) -> str:
 
 class StorageError(RuntimeError):
     pass
+
+
+def _retry(action: Callable[[], object], attempts: int = 5) -> None:
+    """Run a file replace/delete, retrying briefly: on Windows it fails while
+    the media server is still sending that file to someone."""
+    for i in range(attempts):
+        try:
+            action()
+            return
+        except PermissionError:
+            if i == attempts - 1:
+                raise
+            time.sleep(0.2 * (i + 1))
 
 
 def sniff_image_type(data: bytes) -> str | None:
@@ -64,20 +79,29 @@ class MediaStorage:
         return self.prefix + quote(path)
 
     def path_from_url(self, url: str | None) -> str | None:
-        """The image path, if this URL points into our images folder (else None)."""
-        if not url or not url.startswith(self.prefix):
+        """The image path, if this URL points into our images folder (else None).
+
+        http/https, host letter case, ?query and #fragment don't matter.
+        """
+        if not url:
             return None
-        return unquote(url[len(self.prefix) :]) or None
+        ours, theirs = urlsplit(self.prefix), urlsplit(url)
+        if theirs.netloc.lower() != ours.netloc.lower():
+            return None
+        if not theirs.path.startswith(ours.path):
+            return None
+        return unquote(theirs.path[len(ours.path) :]) or None
 
     def save(self, path: str, data: bytes) -> str:
         """Write bytes at a relative path (atomically) and return the public URL."""
         target = self._file(path)
+        tmp = target.with_name(f".{target.name}.{uuid.uuid4().hex}.tmp")
         try:
             target.parent.mkdir(parents=True, exist_ok=True)
-            tmp = target.with_name(f".{target.name}.{uuid.uuid4().hex}.tmp")
             tmp.write_bytes(data)
-            os.replace(tmp, target)
+            _retry(lambda: os.replace(tmp, target))
         except OSError as e:
+            tmp.unlink(missing_ok=True)
             raise StorageError(f"Couldn't save the image: {e}") from e
         return self.public_url(path)
 
@@ -95,8 +119,9 @@ class MediaStorage:
 
     def delete(self, paths: list[str]) -> None:
         for path in paths:
+            target = self._file(path)
             try:
-                self._file(path).unlink(missing_ok=True)
+                _retry(lambda: target.unlink(missing_ok=True))
             except OSError as e:
                 raise StorageError(f"Couldn't delete {path}: {e}") from e
 

@@ -1,7 +1,7 @@
 """A playable video: a link to an HLS (.m3u8) or MP4 file, plus its length.
 
-Videos are encoded with reelm-encoder and hosted on Cloudflare R2 (or any
-static host); the row just stores the public link. The player URL is built in
+Videos are encoded with reelm-encoder and served from the self-hosted media
+folder (or any static host); the row just stores the public link. The player URL is built in
 app/services/video_url.py, so a different host later only changes that file.
 
 Each episode / movie gets its own Video row (never shared), so replacing or
@@ -23,7 +23,7 @@ def _now() -> datetime:
 
 
 class VideoProvider(str, enum.Enum):
-    # a public link, e.g. R2: <bucket URL>/videos/<folder>/master.m3u8
+    # a public link, e.g. https://media.reelm.site/videos/<show>/<folder>/master.m3u8
     external = "external"
     # Left over from before the switch to R2. Such a row still loads (so pages
     # don't crash) but never plays; migration c3f8a1d2e5b7 won't run until none
@@ -44,7 +44,7 @@ class Video(Base):
     url: Mapped[str | None] = mapped_column(String(500))
     duration_sec: Mapped[float | None] = mapped_column(Float)
     # Language codes of the subtitle files next to the playlist, e.g. ["en"] for
-    # .../<folder>/en.vtt (R2 Uploader puts them there).
+    # .../<folder>/en.vtt (reelm-encoder puts them there).
     subtitles: Mapped[list[str]] = mapped_column(
         JSONList, default=list, server_default=text("'[]'")
     )

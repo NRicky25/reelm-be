@@ -115,6 +115,34 @@ def test_delete_missing_file_is_fine(fake_storage):
     fake_storage.client().delete(["posters/gone.jpg"])
 
 
+def test_urls_match_regardless_of_scheme_case_and_query(fake_storage):
+    st = fake_storage.client()
+    assert st.path_from_url(f"{PREFIX}posters/a.jpg?v=2#x") == "posters/a.jpg"
+    assert st.path_from_url("http://MEDIA.example.com/images/posters/a.jpg") == (
+        "posters/a.jpg"
+    )
+    assert st.path_from_url("https://media.example.com/videos/x.jpg") is None
+    assert st.path_from_url("https://media.example.com.evil.io/images/a.jpg") is None
+
+
+def test_file_in_use_is_retried_then_temp_file_removed(fake_storage, monkeypatch):
+    """On Windows a file being served can't be replaced for a moment."""
+    import app.services.storage as storage_module
+
+    calls = []
+
+    def busy(src, dst):
+        calls.append(dst)
+        raise PermissionError("in use")
+
+    monkeypatch.setattr(storage_module.os, "replace", busy)
+    monkeypatch.setattr(storage_module.time, "sleep", lambda s: None)
+    with pytest.raises(StorageError, match="Couldn't save"):
+        fake_storage.client().upload("stills", JPEG, name="cave")
+    assert len(calls) == 5
+    assert list((fake_storage.root / "images").rglob("*.tmp")) == []
+
+
 # ───────── admin uploads ─────────
 @pytest.fixture
 def image_admin(

@@ -152,7 +152,7 @@ def configure_views(settings: Settings) -> None:
 
 
 def _delete_videos(session: Session, video_ids: list[str]) -> None:
-    """Delete the video rows (the files on R2 stay; remove them in the R2 dashboard)."""
+    """Delete the video rows (the files stay in MEDIA_ROOT/videos; delete them by hand)."""
     if not video_ids:
         return
     for video in session.scalars(select(Video).where(Video.id.in_(video_ids))):
@@ -229,7 +229,7 @@ def check_video_url(url: str | None) -> str:
     if not VIDEO_URL.match(url):
         raise ValueError(
             "Link: paste the full link to the video's master.m3u8 (or an .mp4 file), "
-            "e.g. https://pub-xxxx.r2.dev/videos/episode-1-3f9a2c/master.m3u8"
+            "e.g. https://media.reelm.site/videos/my-show/episode-1-3f9a2c/master.m3u8"
         )
     return url
 
@@ -734,8 +734,8 @@ class VideoAdmin(CsvFieldsMixin, BaseAdmin, model=Video):
         "url": {
             "label": "Link",
             "description": (
-                "The video's master.m3u8 on R2, e.g. "
-                "https://pub-xxxx.r2.dev/videos/episode-1-3f9a2c/master.m3u8 "
+                "The video's master.m3u8 on the media server, e.g. "
+                "https://media.reelm.site/videos/my-show/episode-1-3f9a2c/master.m3u8 "
                 "(Reelm Encoder shows it). A direct .mp4 link works too."
             ),
             "validators": [validators.InputRequired()],
@@ -752,7 +752,7 @@ class VideoAdmin(CsvFieldsMixin, BaseAdmin, model=Video):
             "Subtitles",
             (
                 "Language codes of the subtitle files next to master.m3u8, e.g. en "
-                "(for en.vtt), or en, es. R2 Uploader shows them. Empty = none."
+                "(for en.vtt), or en, es. Empty = none."
             ),
             "subtitles",
         )

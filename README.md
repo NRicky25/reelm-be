@@ -118,6 +118,6 @@ that file.
 ### Coming from Mux
 
 The migration `c3f8a1d2e5b7` drops the Mux columns. It **refuses to run while a Mux video
-still exists** (it would stop playing): first give those episodes an R2 video and delete the
+still exists** (it would stop playing): first give those episodes a self-hosted video and delete the
 Mux video in the admin, then `uv run alembic upgrade head`. Remove any `MUX_*` lines from
 `.env` (they're ignored now) and the webhook in the Mux dashboard.
