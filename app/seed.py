@@ -20,7 +20,6 @@ from app.models import (
     TitleType,
     Video,
     VideoProvider,
-    VideoStatus,
 )
 
 DEFAULT_SEED_FILE = Path(__file__).resolve().parent.parent / "seed" / "catalogue.json"
@@ -63,7 +62,7 @@ def seed(
     def video(url: str | None) -> Video | None:
         if not url:
             return None
-        return Video(provider=VideoProvider.external, url=url, status=VideoStatus.ready)
+        return Video(provider=VideoProvider.external, url=url)
 
     for t in titles:
         episode_ids = {e["id"] for s in t.get("seasons") or [] for e in s["episodes"]}
@@ -98,6 +97,7 @@ def seed(
             duration_sec=t.get("durationSec"),
             intro_start_sec=t.get("introStartSec"),
             intro_end_sec=t.get("introEndSec"),
+            outro_start_sec=t.get("outroStartSec") or None,  # 0 = none
             video=video(t.get("videoUrl")),
         )
         title.genre_links = [
@@ -118,6 +118,7 @@ def seed(
                         thumb_url=e.get("thumbUrl"),
                         intro_start_sec=e.get("introStartSec"),
                         intro_end_sec=e.get("introEndSec"),
+                        outro_start_sec=e.get("outroStartSec") or None,  # 0 = none
                         video=video(e.get("videoUrl")),
                     )
                 )

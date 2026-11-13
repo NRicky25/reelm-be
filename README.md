@@ -86,19 +86,41 @@ key; it never goes in the frontend). Images live in a public bucket `images` (cr
 - Uploaded files get unique names and are cached by Supabase's CDN, so a deleted image can stay reachable at its
   old URL until the cache expires.
 
-## Uploading videos (Mux)
+## Videos (Cloudflare R2)
 
-1. Put `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET` in `.env` (Mux → Settings → Access Tokens, *Mux Video: Read + Write*).
-2. Admin → **Media → Upload video**: pick a show/episode (or a movie) and a file. The file goes straight from
-   your browser to Mux; the page then checks with Mux until it's ready (usually under a minute for short clips).
-3. Uploading replaces the episode's old video (its Mux asset is deleted too). Deleting a title / episode / video
-   in the admin also deletes the Mux asset, which matters on the free plan (10 videos).
+Videos are encoded on your PC with [reelm-encoder](https://github.com/NRicky25/reelm-encoder)
+(1080p / 720p / 480p HLS) and hosted on **Cloudflare R2**, which doesn't charge for streaming
+to viewers. A video in Reelm is just a **link + duration**.
 
-**Webhooks (for production):** in Mux → Settings → Webhooks, add `https://<your-api>/webhooks/mux` and put the
-signing secret in `MUX_WEBHOOK_SECRET`. Requests are rejected unless the `Mux-Signature` is valid and recent.
-Locally you don't need webhooks: the upload page polls Mux instead.
+**R2 bucket (once):** Cloudflare → R2 → create a bucket, then in its Settings:
 
-## Videos
+- **Public Development URL → Enable** (testing; rate-limited), or for production
+  **Custom Domains → Connect** (e.g. `media.example.com`).
+- **CORS policy**, so the website may load the videos (add your real site when deployed):
+  ```json
+  [{ "AllowedOrigins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+     "AllowedMethods": ["GET", "HEAD"], "AllowedHeaders": ["*"], "MaxAgeSeconds": 86400 }]
+  ```
 
-`videos` stores the provider (`mux` or `external`) and its IDs, never a hard-coded Mux URL.
-`app/services/video_url.py` builds the playback URL, so changing host only changes that file.
+**Adding a video:**
+
+1. Encode it with Reelm Encoder; you get a folder like `episode-1-3f9a2c`.
+2. Upload that folder into the bucket under `videos/`.
+3. Admin → **Media → Videos → New**: paste the link
+   `https://<bucket URL>/videos/<folder>/master.m3u8` and the duration (R2 Uploader shows
+   both). **Subtitles**: the language codes of the `.vtt` files in that folder, e.g. `en` for
+   `en.vtt` (or `en, es`); the player then offers them in its Subtitles menu.
+4. Open the episode (or movie), choose that video, set its **Duration**, Save.
+
+Deleting an episode / movie / video in the admin removes the row only: delete the folder in
+the R2 dashboard too, or it keeps counting toward storage.
+
+`app/services/video_url.py` builds the playback URL, so changing host later only changes
+that file.
+
+### Coming from Mux
+
+The migration `c3f8a1d2e5b7` drops the Mux columns. It **refuses to run while a Mux video
+still exists** (it would stop playing): first give those episodes an R2 video and delete the
+Mux video in the admin, then `uv run alembic upgrade head`. Remove any `MUX_*` lines from
+`.env` (they're ignored now) and the webhook in the Mux dashboard.

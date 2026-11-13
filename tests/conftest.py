@@ -13,15 +13,12 @@ dropped by the test run. Your real tables in `public` are never touched.
 import os
 
 # Importing the app reads settings: make sure it can never reach the real
-# database, Mux or Supabase from .env (environment variables beat .env).
+# database or Supabase from .env (environment variables beat .env).
 os.environ.update(
     DATABASE_URL="sqlite://",
     ADMIN_PASSWORD="",
     SUPABASE_URL="",
     SUPABASE_SERVICE_ROLE_KEY="",
-    MUX_TOKEN_ID="",
-    MUX_TOKEN_SECRET="",
-    MUX_WEBHOOK_SECRET="",
 )
 
 from collections.abc import Iterator

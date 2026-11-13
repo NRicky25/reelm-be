@@ -8,7 +8,6 @@ from app.models import (
     TitleGenre,
     Video,
     VideoProvider,
-    VideoStatus,
 )
 from app.seed import seed
 from app.services.video_url import playback_url
@@ -112,36 +111,24 @@ def test_deleting_a_video_unlinks_the_episode(db):
 
 
 def test_new_rows_get_generated_ids(db):
-    v = Video(provider=VideoProvider.mux)
+    v = Video(url="https://x/y.m3u8")
     db.add(v)
     db.flush()
-    assert v.id and v.status == VideoStatus.waiting
+    assert v.id and v.provider == VideoProvider.external
 
 
-def test_playback_url_per_provider():
+def test_playback_url():
     assert playback_url(None) is None
-
-    mux = Video(
-        provider=VideoProvider.mux, playback_id="abc123", status=VideoStatus.ready
-    )
-    assert playback_url(mux) == "https://stream.mux.com/abc123.m3u8"
-    mux_waiting = Video(
-        provider=VideoProvider.mux, playback_id="abc", status=VideoStatus.waiting
-    )
-    assert playback_url(mux_waiting) is None
-    mux_no_id = Video(provider=VideoProvider.mux, status=VideoStatus.ready)
-    assert playback_url(mux_no_id) is None
-
-    ext = Video(
-        provider=VideoProvider.external,
-        url="https://x/y.m3u8",
-        status=VideoStatus.ready,
-    )
+    ext = Video(provider=VideoProvider.external, url="https://x/y.m3u8")
     assert playback_url(ext) == "https://x/y.m3u8"
-    # external URLs need no processing, so they play even if never marked ready
-    ext_new = Video(provider=VideoProvider.external, url="https://x/z.mp4")
-    assert playback_url(ext_new) == "https://x/z.mp4"
+    # links need no processing step: they play as soon as they're set
+    assert playback_url(
+        Video(provider=VideoProvider.external, url="https://x/z.mp4")
+    ) == ("https://x/z.mp4")
     assert playback_url(Video(provider=VideoProvider.external)) is None
+    assert playback_url(Video(provider=VideoProvider.external, url="")) is None
+    # a video left over from Mux still loads, but never plays
+    assert playback_url(Video(provider=VideoProvider.mux)) is None
 
 
 def test_health(client):

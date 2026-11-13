@@ -233,6 +233,22 @@ def test_playback_episode(client):
     assert p["introStartSec"] == 5 and p["introEndSec"] == 35
     assert p["next"] == {"season": 2, "episodeId": "echoes-of-the-starfall-s2e8"}
     assert p["title"]["slug"] == "echoes-of-the-starfall"
+    assert "outroStartSec" not in p  # not set: left out, like the other empty fields
+
+
+def test_playback_outro(client, db):
+    from sqlalchemy import select
+
+    from app.models import Episode
+
+    ep = db.scalar(select(Episode).where(Episode.id == "echoes-of-the-starfall-s2e7"))
+    ep.outro_start_sec = 1300
+    db.commit()
+    p = client.get(
+        "/playback/echoes-of-the-starfall", params={"ep": "echoes-of-the-starfall-s2e7"}
+    ).json()
+    assert p["outroStartSec"] == 1300
+    assert p["episode"]["outroStartSec"] == 1300
 
 
 def test_playback_defaults_to_first_episode_and_crosses_seasons(client):

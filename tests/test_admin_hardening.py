@@ -43,7 +43,7 @@ def title_form(t: Title, **overrides) -> dict:
         data["staff_pick"] = "y"
     if t.video_id:
         data["video"] = t.video_id
-    for key in ("duration_sec", "intro_start_sec", "intro_end_sec"):
+    for key in ("duration_sec", "intro_start_sec", "intro_end_sec", "outro_start_sec"):
         value = getattr(t, key)
         data[key] = "" if value is None else str(value)
     data.update(overrides)
@@ -264,6 +264,8 @@ def test_slug_rules(admin_client, db):  # noqa: F811
         ({"poster_focus_x": "500"}, "between 0 and 100"),
         ({"duration_sec": "-5"}, "negative"),
         ({"intro_start_sec": "300", "intro_end_sec": "10"}, "after intro start"),
+        ({"intro_start_sec": "10", "intro_end_sec": "90", "outro_start_sec": "60"}, "after the intro ends"),
+        ({"duration_sec": "6000", "outro_start_sec": "6000"}, "before the end of the video"),
         ({"colors_csv": "red; x"}, "two hex colours"),
     ],
 )
@@ -277,6 +279,21 @@ def test_validation(admin_client, db, overrides, message):  # noqa: F811
     )
     assert r.status_code == 400, r.status_code
     assert message in r.text
+
+
+def test_outro_is_saved_and_zero_means_none(admin_client, db):  # noqa: F811
+    login(admin_client)
+    t = get_title(db, "the-last-lighthouse")
+    r = admin_client.post(
+        f"/admin/title/edit/{t.id}",
+        data=title_form(t, duration_sec="6000", outro_start_sec="5700"),
+        follow_redirects=False,
+    )
+    assert r.status_code in (302, 303), r.text[:300]
+    assert get_title(db, "the-last-lighthouse").outro_start_sec == 5700
+    t = get_title(db, "the-last-lighthouse")
+    admin_client.post(f"/admin/title/edit/{t.id}", data=title_form(t, outro_start_sec="0"))
+    assert get_title(db, "the-last-lighthouse").outro_start_sec is None
 
 
 def test_empty_colours_use_default(admin_client, db):  # noqa: F811
@@ -327,3 +344,26 @@ def test_video_search_only_offers_unused_videos(admin_client, db):  # noqa: F811
     ids = {item["id"] for item in r.json()["results"]}
     assert spare.id in ids
     assert db.get(Episode, "hollow-tide-s1e1").video_id not in ids
+
+
+@pytest.mark.parametrize(
+    ("data", "outro", "error"),
+    [
+        ({"outro_start_sec": 1400, "intro_end_sec": 90, "duration_sec": 1500}, 1400, None),
+        ({"outro_start_sec": 0, "duration_sec": 1500}, None, None),  # 0 = no credits
+        ({"outro_start_sec": None}, None, None),
+        ({"outro_start_sec": 1400, "duration_sec": 0}, 1400, None),  # length unknown: no upper bound
+        ({"outro_start_sec": 60, "intro_end_sec": 90}, None, "after the intro ends"),
+        ({"outro_start_sec": 1500, "duration_sec": 1500}, None, "before the end of the video"),
+    ],
+)
+def test_check_outro(data, outro, error):
+    from app.admin.views import check_outro
+
+    if error:
+        with pytest.raises(ValueError, match=error):
+            check_outro(dict(data))
+    else:
+        data = dict(data)
+        check_outro(data)
+        assert data["outro_start_sec"] == outro

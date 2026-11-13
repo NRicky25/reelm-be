@@ -1,7 +1,7 @@
 """Database tables. Import everything here so Alembic sees all models."""
 
 from app.models.catalog import Episode, Genre, Season, Title, TitleGenre, TitleType
-from app.models.video import Video, VideoProvider, VideoStatus
+from app.models.video import Video, VideoProvider
 
 __all__ = [
     "Episode",
@@ -12,5 +12,4 @@ __all__ = [
     "TitleType",
     "Video",
     "VideoProvider",
-    "VideoStatus",
 ]

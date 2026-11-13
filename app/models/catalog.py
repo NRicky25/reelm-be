@@ -116,6 +116,8 @@ class Title(Base):
     duration_sec: Mapped[int | None] = mapped_column(Integer)
     intro_start_sec: Mapped[int | None] = mapped_column(Integer)
     intro_end_sec: Mapped[int | None] = mapped_column(Integer)
+    # where the end credits start; they run to the end (enables "Skip Credits")
+    outro_start_sec: Mapped[int | None] = mapped_column(Integer)
     video_id: Mapped[str | None] = mapped_column(
         ForeignKey("videos.id", ondelete="SET NULL")
     )
@@ -190,6 +192,8 @@ class Episode(Base):
     thumb_url: Mapped[str | None] = mapped_column(String(500))
     intro_start_sec: Mapped[int | None] = mapped_column(Integer)
     intro_end_sec: Mapped[int | None] = mapped_column(Integer)
+    # where the end credits start; they run to the end (enables "Next Episode")
+    outro_start_sec: Mapped[int | None] = mapped_column(Integer)
     video_id: Mapped[str | None] = mapped_column(
         ForeignKey("videos.id", ondelete="SET NULL")
     )

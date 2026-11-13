@@ -23,7 +23,7 @@ from app.schemas.catalog import (
     TitleOut,
     TitleSummaryOut,
 )
-from app.services.video_url import playable_clause, playback_url
+from app.services.video_url import playable_clause, playback_url, subtitle_tracks
 
 NEW_EPISODE_DAYS = 14  # a show is "new" if its latest episode is this recent
 NEW_MOVIE_DAYS = 84  # a movie is "new" if it was added this recently
@@ -279,7 +279,7 @@ def list_genres(db: Session, title_type: TitleType | None = None) -> list[str]:
 
 
 def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | None:
-    """What the player needs: the stream URL, intro times and the next episode."""
+    """What the player needs: the stream URL, intro/outro times and the next episode."""
     t = get_title(db, slug)
     if t is None:
         return None
@@ -292,9 +292,11 @@ def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | No
         return PlayableOut(
             title=title_out(t),
             video_url=url,
+            subtitles=subtitle_tracks(t.video),
             duration_sec=t.duration_sec or 0,
             intro_start_sec=t.intro_start_sec,
             intro_end_sec=t.intro_end_sec,
+            outro_start_sec=t.outro_start_sec,
         )
 
     flat = [(s.number, e) for s in t.seasons for e in s.episodes]
@@ -312,8 +314,10 @@ def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | No
         episode=episode_out(ep),
         season=season_no,
         video_url=playback_url(ep.video),
+        subtitles=subtitle_tracks(ep.video),
         duration_sec=ep.duration_sec,
         intro_start_sec=ep.intro_start_sec,
         intro_end_sec=ep.intro_end_sec,
+        outro_start_sec=ep.outro_start_sec,
         next=NextEpisodeOut(season=nxt[0], episode_id=nxt[1].id) if nxt else None,
     )

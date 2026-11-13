@@ -18,18 +18,16 @@ from sqlalchemy import exists, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from starlette.requests import Request
-from wtforms import FileField, Form, StringField, validators
+from wtforms import FileField, FloatField, Form, StringField, validators
 
 from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
-from app.services.mux import MuxClient
 from app.services.storage import (
     MAX_BYTES,
     StorageError,
     SupabaseStorage,
     public_prefix,
 )
-from app.services.video_sync import delete_videos_everywhere, remove_from_mux
 
 log = logging.getLogger(__name__)
 T = TypeVar("T")
@@ -60,6 +58,22 @@ def check_intro(data: dict) -> None:
         raise ValueError("Set both intro start and intro end, or neither.")
     if start is not None and end <= start:
         raise ValueError("Intro end must be after intro start.")
+
+
+def check_outro(data: dict) -> None:
+    """The end credits start after the intro, and before the end of the video."""
+    outro = data.get("outro_start_sec")
+    if not outro:  # empty, or 0: no outro
+        data["outro_start_sec"] = None
+        return
+    intro_end = data.get("intro_end_sec")
+    if intro_end is not None and outro < intro_end:
+        raise ValueError("Credits start must be after the intro ends.")
+    duration = data.get("duration_sec")
+    if duration and outro >= duration:
+        raise ValueError(
+            f"Credits start ({outro} s) must be before the end of the video ({duration} s)."
+        )
 
 
 class BaseAdmin(ModelView):
@@ -120,51 +134,30 @@ class CsvFieldsMixin:
         setattr(model, attr, values)
 
 
-def _pending_uploads(session: Session, *, episode_ids=(), title_ids=()) -> list[str]:
-    """Uploads still processing for these episodes/movies (they'd be orphaned otherwise)."""
-    return list(
-        session.scalars(
-            select(Video.id).where(
-                Video.pending_episode_id.in_(list(episode_ids))
-                | Video.pending_title_id.in_(list(title_ids))
-            )
-        )
-    )
-
-
 def _video_ids_of_titles(session: Session, title_ids: list[str]) -> list[str]:
     movie = session.scalars(select(Title.video_id).where(Title.id.in_(title_ids))).all()
-    episodes = session.execute(
-        select(Episode.id, Episode.video_id)
-        .join(Season)
-        .where(Season.title_id.in_(title_ids))
+    episodes = session.scalars(
+        select(Episode.video_id).join(Season).where(Season.title_id.in_(title_ids))
     ).all()
-    pending = _pending_uploads(
-        session, episode_ids=[e for e, _ in episodes], title_ids=title_ids
-    )
-    return [v for v in (*movie, *(v for _, v in episodes), *pending) if v]
+    return [v for v in (*movie, *episodes) if v]
 
 
 _settings: Settings | None = None
 
 
 def configure_views(settings: Settings) -> None:
-    """Called by setup_admin: lets the views reach Mux when deleting videos."""
+    """Called by setup_admin: lets the views reach image storage."""
     global _settings
     _settings = settings
 
 
 def _delete_videos(session: Session, video_ids: list[str]) -> None:
-    mux = (
-        MuxClient.from_settings(_settings)
-        if _settings and _settings.mux_enabled
-        else None
-    )
-    try:
-        delete_videos_everywhere(session, video_ids, mux)
-    finally:
-        if mux:
-            mux.close()
+    """Delete the video rows (the files on R2 stay; remove them in the R2 dashboard)."""
+    if not video_ids:
+        return
+    for video in session.scalars(select(Video).where(Video.id.in_(video_ids))):
+        session.delete(video)
+    session.commit()
 
 
 class DeletesOwnVideosMixin:
@@ -190,7 +183,7 @@ UNUSED_VIDEO = [
     ~exists().where(Title.video_id == Video.id),
 ]
 VIDEO_AJAX = {
-    "fields": ("url", "playback_id"),
+    "fields": ("url",),
     "order_by": "created_at",
     "limit": 20,
     "where": UNUSED_VIDEO,
@@ -225,6 +218,20 @@ def delete_unused_images(session: Session, urls: list[str]) -> None:
         log.warning("Couldn't delete unused images %s", urls, exc_info=True)
     finally:
         storage.close()
+
+
+VIDEO_URL = re.compile(r"^https?://[^\s/]+/\S*\.(m3u8|mp4)(\?\S*)?$", re.IGNORECASE)
+
+
+def check_video_url(url: str | None) -> str:
+    """A video link must be a full http(s) link to an .m3u8 playlist or an .mp4 file."""
+    url = (url or "").strip()
+    if not VIDEO_URL.match(url):
+        raise ValueError(
+            "Link: paste the full link to the video's master.m3u8 (or an .mp4 file), "
+            "e.g. https://pub-xxxx.r2.dev/videos/episode-1-3f9a2c/master.m3u8"
+        )
+    return url
 
 
 def check_image_url(label: str, url: str | None) -> None:
@@ -439,6 +446,7 @@ class TitleAdmin(
         Title.duration_sec,
         Title.intro_start_sec,
         Title.intro_end_sec,
+        Title.outro_start_sec,
         Title.video,
     ]
     form_args: ClassVar = {
@@ -469,6 +477,12 @@ class TitleAdmin(
         },
         "intro_end_sec": {
             "description": "Movies only: where the intro ends (seconds).",
+            "validators": OPTIONAL_SECONDS,
+        },
+        "outro_start_sec": {
+            "label": "Credits start (sec)",
+            "description": "Movies only: where the end credits start (seconds); they run to the end. "
+            "Enables the Skip Credits button.",
             "validators": OPTIONAL_SECONDS,
         },
         "video": {"description": "Movies only. Shows use the video on each episode."},
@@ -506,6 +520,7 @@ class TitleAdmin(
         self, data: dict, model: Title, is_created: bool, request: Request
     ) -> None:
         check_intro(data)
+        check_outro(data)
         slug = slugify(data.get("slug") or "") or slugify(data.get("name") or "")
         if not slug:
             raise ValueError(
@@ -598,11 +613,10 @@ class SeasonAdmin(
     }
 
     def video_ids_for(self, session: Session, model: Season) -> list[str]:
-        episodes = session.execute(
-            select(Episode.id, Episode.video_id).where(Episode.season_id == model.id)
+        ids = session.scalars(
+            select(Episode.video_id).where(Episode.season_id == model.id)
         ).all()
-        pending = _pending_uploads(session, episode_ids=[e for e, _ in episodes])
-        return [v for v in (*(v for _, v in episodes), *pending) if v]
+        return [v for v in ids if v]
 
     def image_urls_for(self, session: Session, model: Season) -> list[str]:
         return _episode_thumbs(session, Episode.season_id == model.id)
@@ -641,6 +655,7 @@ class EpisodeAdmin(
         Episode.thumb_url,
         Episode.intro_start_sec,
         Episode.intro_end_sec,
+        Episode.outro_start_sec,
         Episode.video,
     ]
     form_args: ClassVar = {
@@ -657,6 +672,12 @@ class EpisodeAdmin(
             "validators": OPTIONAL_SECONDS,
         },
         "intro_end_sec": {"description": "Seconds.", "validators": OPTIONAL_SECONDS},
+        "outro_start_sec": {
+            "label": "Credits start (sec)",
+            "description": "Where the end credits start (seconds); they run to the end. "
+            "Enables the Next Episode button there.",
+            "validators": OPTIONAL_SECONDS,
+        },
         "video": {"description": "Without a video the episode can't be played."},
     }
     image_fields: ClassVar = {
@@ -668,13 +689,12 @@ class EpisodeAdmin(
         self, data: dict, model: Episode, is_created: bool, request: Request
     ) -> None:
         check_intro(data)
+        check_outro(data)
         await super().on_model_change(data, model, is_created, request)
 
     def video_ids_for(self, session: Session, model: Episode) -> list[str]:
         vid = session.scalar(select(Episode.video_id).where(Episode.id == model.id))
-        return [
-            v for v in (vid, *_pending_uploads(session, episode_ids=[model.id])) if v
-        ]
+        return [vid] if vid else []
 
     def image_urls_for(self, session: Session, model: Episode) -> list[str]:
         return _episode_thumbs(session, Episode.id == model.id)
@@ -692,37 +712,72 @@ class GenreAdmin(BaseAdmin, model=Genre):
     form_columns = [Genre.name]
 
 
-class VideoAdmin(BaseAdmin, model=Video):
+LANG_CODE = re.compile(r"^[a-z]{2,3}(-[a-z0-9]{2,8})?$")
+
+
+class VideoAdmin(CsvFieldsMixin, BaseAdmin, model=Video):
     name = "Video"
     name_plural = "Videos"
     icon = "fa-solid fa-circle-play"
     category = "Media"
 
-    column_list = [
-        Video.provider,
-        Video.status,
-        Video.playback_id,
-        Video.url,
-        Video.created_at,
-    ]
-    column_searchable_list = [Video.url, Video.playback_id, Video.asset_id]
-    column_sortable_list = [Video.created_at, Video.status]
+    column_list = [Video.url, Video.duration_sec, Video.subtitles, Video.created_at]
+    column_labels: ClassVar = {"url": "Link", "duration_sec": "Duration (s)"}
+    # a video left over from Mux has no link: say what it is instead of a blank cell
+    column_formatters: ClassVar = {Video.url: lambda m, _a: str(m)}
+    column_searchable_list = [Video.url]
+    column_sortable_list = [Video.created_at]
     column_default_sort = [(Video.created_at, True)]
     page_size = 50
-    form_columns = [
-        Video.provider,
-        Video.status,
-        Video.url,
-        Video.playback_id,
-        Video.duration_sec,
-    ]
+    form_columns = [Video.url, Video.duration_sec]
+    # SQLAdmin has no built-in form field for Float columns (the form would crash)
+    form_overrides: ClassVar = {"duration_sec": FloatField}
     form_args: ClassVar = {
-        "url": {"description": "External videos: a direct .m3u8 or .mp4 link."},
-        "playback_id": {
-            "description": "Mux videos: filled in automatically after upload."
+        "url": {
+            "label": "Link",
+            "description": (
+                "The video's master.m3u8 on R2, e.g. "
+                "https://pub-xxxx.r2.dev/videos/episode-1-3f9a2c/master.m3u8 "
+                "(Reelm Encoder shows it). A direct .mp4 link works too."
+            ),
+            "validators": [validators.InputRequired()],
         },
-        "duration_sec": {"validators": OPTIONAL_SECONDS},
+        "duration_sec": {
+            "label": "Duration (seconds)",
+            "description": "Reelm Encoder shows it, with a Copy button.",
+            "validators": OPTIONAL_SECONDS,
+        },
     }
+
+    csv_fields: ClassVar = {
+        "subtitles_csv": (
+            "Subtitles",
+            (
+                "Language codes of the subtitle files next to master.m3u8, e.g. en "
+                "(for en.vtt), or en, es. R2 Uploader shows them. Empty = none."
+            ),
+            "subtitles",
+        )
+    }
+
+    async def on_model_change(
+        self, data: dict, model: Video, is_created: bool, request: Request
+    ) -> None:
+        if "url" in data:
+            data["url"] = check_video_url(data.get("url"))
+        await super().on_model_change(data, model, is_created, request)
+
+    async def set_csv_value(self, model: Any, attr: str, values: list[str]) -> None:
+        if attr == "subtitles":
+            codes = list(dict.fromkeys(v.strip().lower() for v in values))
+            bad = [c for c in codes if not LANG_CODE.match(c)]
+            if bad:
+                raise ValueError(
+                    f"Subtitles: “{bad[0]}” isn't a language code. Use the file's name "
+                    "without .vtt, e.g. en for en.vtt (or en, es)."
+                )
+            values = codes
+        await super().set_csv_value(model, attr, values)
 
     async def on_model_delete(self, model: Video, request: Request) -> None:
         in_use = await self.in_thread(
@@ -738,23 +793,6 @@ class VideoAdmin(BaseAdmin, model=Video):
                 "This video is used by an episode or movie. Remove it there first."
             )
         await super().on_model_delete(model, request)
-
-    async def after_model_delete(self, model: Video, request: Request) -> None:
-        # The row is gone; remove the Mux asset too so it doesn't count toward the plan limit.
-        if (
-            model.provider.value == "mux"
-            and (model.asset_id or model.upload_id)
-            and _settings
-            and _settings.mux_enabled
-        ):
-            mux = MuxClient.from_settings(_settings)
-            try:
-                await anyio.to_thread.run_sync(
-                    remove_from_mux, mux, model.asset_id, model.upload_id
-                )
-            finally:
-                mux.close()
-        await super().after_model_delete(model, request)
 
 
 ALL_VIEWS = [TitleAdmin, SeasonAdmin, EpisodeAdmin, GenreAdmin, VideoAdmin]

@@ -28,6 +28,7 @@ class EpisodeOut(CamelModel):
     thumb_url: str | None = None
     intro_start_sec: int | None = None
     intro_end_sec: int | None = None
+    outro_start_sec: int | None = None
     # Missing when the episode has no playable video yet.
     video_url: str | None = None
 
@@ -75,6 +76,7 @@ class TitleSummaryOut(CamelModel):
     video_url: str | None = None
     intro_start_sec: int | None = None
     intro_end_sec: int | None = None
+    outro_start_sec: int | None = None
     # Anime & series only
     latest_episode: LatestEpisodeOut | None = None
 
@@ -90,12 +92,19 @@ class NextEpisodeOut(CamelModel):
     episode_id: str
 
 
+class SubtitleOut(CamelModel):
+    lang: str  # language code, e.g. "en"
+    url: str  # the .vtt file
+
+
 class PlayableOut(CamelModel):
     title: TitleOut
     episode: EpisodeOut | None = None
     season: int | None = None
     video_url: str
+    subtitles: list[SubtitleOut] = []
     duration_sec: int
     intro_start_sec: int | None = None
     intro_end_sec: int | None = None
+    outro_start_sec: int | None = None
     next: NextEpisodeOut | None = None

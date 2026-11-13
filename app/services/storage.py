@@ -14,7 +14,7 @@ import httpx
 
 from app.config import Settings
 
-# What the admin may upload, and how big (posters/backdrops; videos go to Mux).
+# What the admin may upload, and how big (posters/backdrops; videos are links to R2).
 ALLOWED_TYPES = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
 MAX_BYTES = 8 * 1024 * 1024
 
