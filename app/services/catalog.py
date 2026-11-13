@@ -278,8 +278,17 @@ def list_genres(db: Session, title_type: TitleType | None = None) -> list[str]:
     return sorted(db.scalars(stmt), key=str.lower)
 
 
-def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | None:
-    """What the player needs: the stream URL, intro/outro times and the next episode."""
+def playable(
+    db: Session,
+    slug: str,
+    episode_id: str | None,
+    season_episode: tuple[int, int] | None = None,
+) -> PlayableOut | None:
+    """What the player needs: the stream URL, intro/outro times and the next episode.
+
+    The episode is picked by id, or by (season number, episode number), or else
+    the first available one.
+    """
     t = get_title(db, slug)
     if t is None:
         return None
@@ -302,6 +311,11 @@ def playable(db: Session, slug: str, episode_id: str | None) -> PlayableOut | No
     flat = [(s.number, e) for s in t.seasons for e in s.episodes]
     if episode_id:
         idx = next((i for i, (_, e) in enumerate(flat) if e.id == episode_id), None)
+    elif season_episode:
+        idx = next(
+            (i for i, (s, e) in enumerate(flat) if (s, e.number) == season_episode),
+            None,
+        )
     else:
         idx = next((i for i, (_, e) in enumerate(flat) if is_available(e, on)), None)
     if idx is None or not is_available(flat[idx][1], on):

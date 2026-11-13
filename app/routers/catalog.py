@@ -88,8 +88,17 @@ def genres(db: DB, type: TitleType | None = None):
 
 
 @router.get("/playback/{slug}", response_model=PlayableOut, **OPTS)
-def playback(slug: str, db: DB, ep: str | None = None):
-    p = catalog.playable(db, slug, ep)
+def playback(
+    slug: str,
+    db: DB,
+    ep: str | None = None,
+    s: Annotated[int | None, Query(ge=0, description="Season number")] = None,
+    e: Annotated[int | None, Query(ge=0, description="Episode number")] = None,
+):
+    """An episode by id (`ep`) or by season + episode number (`s` + `e`)."""
+    if (s is None) != (e is None):
+        raise HTTPException(422, "Give both s (season) and e (episode)")
+    p = catalog.playable(db, slug, ep, (s, e) if s is not None else None)
     if p is None:
         raise HTTPException(404, "Nothing playable here")
     return p

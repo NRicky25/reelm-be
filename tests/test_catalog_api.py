@@ -264,6 +264,18 @@ def test_playback_defaults_to_first_episode_and_crosses_seasons(client):
     }
 
 
+def test_playback_by_season_and_episode_number(client):
+    """Readable watch links (/watch/<slug>/s2/e7) look episodes up by number."""
+    p = client.get("/playback/echoes-of-the-starfall", params={"s": 2, "e": 7}).json()
+    assert p["episode"]["id"] == "echoes-of-the-starfall-s2e7" and p["season"] == 2
+    missing = client.get("/playback/echoes-of-the-starfall", params={"s": 9, "e": 1})
+    assert missing.status_code == 404
+    future = client.get("/playback/echoes-of-the-starfall", params={"s": 2, "e": 12})
+    assert future.status_code == 404
+    only_one = client.get("/playback/echoes-of-the-starfall", params={"s": 2})
+    assert only_one.status_code == 422
+
+
 def test_playback_movie(client):
     p = client.get("/playback/the-last-lighthouse").json()
     assert "episode" not in p and "next" not in p
