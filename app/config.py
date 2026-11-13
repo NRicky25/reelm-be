@@ -37,15 +37,16 @@ class Settings(BaseSettings):
     # Send the admin cookie over HTTPS only. Turn on in production.
     admin_cookie_secure: bool = False
 
-    # Supabase Storage for images (Project Settings > API). The service-role /
-    # secret key has full access: keep it in this backend only, never in reelm-fe.
-    supabase_url: str | None = None
-    supabase_service_role_key: SecretStr | None = None
-    supabase_bucket: str = "images"
+    # Self-hosted media folder (images/ and videos/), e.g. D:\reelm-media.
+    # Admin image uploads are saved into <MEDIA_ROOT>/images.
+    media_root: Path | None = None
+    # Public address of that folder (the media server behind the tunnel),
+    # e.g. https://media.reelm.site
+    media_public_url: str | None = None
 
     @property
     def storage_enabled(self) -> bool:
-        return bool(self.supabase_url and self.supabase_service_role_key)
+        return bool(self.media_root and self.media_public_url)
 
     @field_validator("database_url")
     @classmethod
@@ -60,8 +61,8 @@ class Settings(BaseSettings):
         "catalog_today",
         "admin_password",
         "admin_secret_key",
-        "supabase_url",
-        "supabase_service_role_key",
+        "media_root",
+        "media_public_url",
         mode="before",
     )
     @classmethod

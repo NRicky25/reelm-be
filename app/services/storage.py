@@ -1,33 +1,31 @@
-"""Image storage on Supabase Storage (a public bucket served by Supabase's CDN).
+"""Image storage in the local media folder (served at MEDIA_PUBLIC_URL).
 
-Images are stored under generated names and served from public URLs, so the
-frontend needs no key to show them. Only this backend (with the service-role
-key) can upload or delete.
-Docs: https://supabase.com/docs/reference/api (Storage API)
+Images are written to <MEDIA_ROOT>/images/<folder>/<name>.<ext> and shown from
+<MEDIA_PUBLIC_URL>/images/<folder>/<name>.<ext>. The media server
+(app/media_server.py, behind the Cloudflare Tunnel) serves that folder read-only,
+so only this backend (and the encoder, for videos) can add or remove files.
 """
 
+import os
 import uuid
-from typing import Any
+from pathlib import Path
 from urllib.parse import quote, unquote
-
-import httpx
 
 from app.config import Settings
 
-# What the admin may upload, and how big (posters/backdrops; videos are links to R2).
+# What the admin may upload, and how big (posters/backdrops/thumbnails).
 ALLOWED_TYPES = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
 MAX_BYTES = 8 * 1024 * 1024
+IMAGES_DIR = "images"
 
 
-def public_prefix(supabase_url: str, bucket: str) -> str:
-    """Start of every public URL in the bucket."""
-    return f"{supabase_url.rstrip('/')}/storage/v1/object/public/{bucket}/"
+def public_prefix(media_public_url: str) -> str:
+    """Start of every public image URL."""
+    return f"{media_public_url.rstrip('/')}/{IMAGES_DIR}/"
 
 
 class StorageError(RuntimeError):
-    def __init__(self, message: str, status_code: int | None = None) -> None:
-        super().__init__(message)
-        self.status_code = status_code
+    pass
 
 
 def sniff_image_type(data: bytes) -> str | None:
@@ -41,109 +39,50 @@ def sniff_image_type(data: bytes) -> str | None:
     return None
 
 
-class SupabaseStorage:
-    def __init__(
-        self,
-        url: str,
-        key: str,
-        bucket: str = "images",
-        *,
-        transport: httpx.BaseTransport | None = None,
-    ) -> None:
-        self.base = url.rstrip("/")
-        self.bucket = bucket
-        self._http = httpx.Client(
-            base_url=f"{self.base}/storage/v1",
-            headers={"apikey": key, "Authorization": f"Bearer {key}"},
-            timeout=httpx.Timeout(30.0),
-            transport=transport,
-        )
+class MediaStorage:
+    def __init__(self, root: Path | str, public_url: str) -> None:
+        self.dir = Path(root).resolve() / IMAGES_DIR
+        self.prefix = public_prefix(public_url)
 
     @classmethod
-    def from_settings(cls, settings: Settings) -> "SupabaseStorage":
+    def from_settings(cls, settings: Settings) -> "MediaStorage":
         if not settings.storage_enabled:
             raise StorageError(
-                "Image storage isn't configured: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
+                "Image storage isn't configured: set MEDIA_ROOT and MEDIA_PUBLIC_URL"
             )
-        return cls(
-            settings.supabase_url,
-            settings.supabase_service_role_key.get_secret_value(),
-            settings.supabase_bucket,
-        )
+        assert settings.media_root and settings.media_public_url
+        return cls(settings.media_root, settings.media_public_url)
 
-    def _call(self, method: str, path: str, **kwargs: Any) -> Any:
-        try:
-            r = self._http.request(method, path, **kwargs)
-        except httpx.HTTPError as e:
-            raise StorageError(f"Couldn't reach Supabase Storage: {e}") from e
-        if r.status_code >= 400:
-            try:
-                detail = r.json().get("message") or r.text
-            except ValueError:
-                detail = r.text
-            raise StorageError(f"Storage {r.status_code}: {detail}", r.status_code)
-        return (
-            r.json()
-            if r.content and "json" in r.headers.get("content-type", "")
-            else None
-        )
-
-    def bucket_settings(self) -> dict[str, Any]:
-        return {
-            "public": True,
-            "file_size_limit": MAX_BYTES,
-            "allowed_mime_types": list(ALLOWED_TYPES),
-        }
-
-    def ensure_bucket(self) -> None:
-        """Create the public image bucket, or fix its settings if it was made by hand."""
-        wanted = self.bucket_settings()
-        try:
-            current = self._call("GET", f"/bucket/{self.bucket}") or {}
-        except StorageError as e:
-            if e.status_code not in (400, 404):
-                raise
-            self._call(
-                "POST",
-                "/bucket",
-                json={"id": self.bucket, "name": self.bucket, **wanted},
-            )
-            return
-        if (
-            current.get("public") is not True
-            or current.get("file_size_limit") != MAX_BYTES
-            or set(current.get("allowed_mime_types") or []) != set(ALLOWED_TYPES)
-        ):
-            self._call(
-                "PUT", f"/bucket/{self.bucket}", json={"id": self.bucket, **wanted}
-            )
-
-    @property
-    def prefix(self) -> str:
-        return public_prefix(self.base, self.bucket)
+    def _file(self, path: str) -> Path:
+        """The file for a relative image path; refuses anything outside the folder."""
+        target = (self.dir / path).resolve()
+        if not target.is_relative_to(self.dir) or target == self.dir:
+            raise StorageError(f"Bad image path: {path!r}")
+        return target
 
     def public_url(self, path: str) -> str:
         return self.prefix + quote(path)
 
     def path_from_url(self, url: str | None) -> str | None:
-        """The object path, if this URL points into our bucket (else None)."""
+        """The image path, if this URL points into our images folder (else None)."""
         if not url or not url.startswith(self.prefix):
             return None
         return unquote(url[len(self.prefix) :]) or None
 
-    def upload(
-        self,
-        folder: str,
-        data: bytes,
-        *,
-        name: str | None = None,
-        max_age: int = 31536000,
-    ) -> str:
-        """Upload an image and return its public URL. Validates type and size.
+    def save(self, path: str, data: bytes) -> str:
+        """Write bytes at a relative path (atomically) and return the public URL."""
+        target = self._file(path)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            tmp = target.with_name(f".{target.name}.{uuid.uuid4().hex}.tmp")
+            tmp.write_bytes(data)
+            os.replace(tmp, target)
+        except OSError as e:
+            raise StorageError(f"Couldn't save the image: {e}") from e
+        return self.public_url(path)
 
-        Generated names never change, so they're cached for a year; pass a short
-        `max_age` when re-uploading under a fixed `name`.
-        """
+    def upload(self, folder: str, data: bytes, *, name: str | None = None) -> str:
+        """Store an image and return its public URL. Validates type and size."""
         if len(data) > MAX_BYTES:
             raise StorageError(
                 f"Image is too large (max {MAX_BYTES // (1024 * 1024)} MB)."
@@ -152,21 +91,14 @@ class SupabaseStorage:
         if content_type is None:
             raise StorageError("Only JPEG, PNG or WebP images can be uploaded.")
         path = f"{folder.strip('/')}/{name or uuid.uuid4().hex}.{ALLOWED_TYPES[content_type]}"
-        self._call(
-            "POST",
-            f"/object/{self.bucket}/{path}",
-            content=data,
-            headers={
-                "Content-Type": content_type,
-                "x-upsert": "true",
-                "cache-control": f"max-age={max_age}",
-            },
-        )
-        return self.public_url(path)
+        return self.save(path, data)
 
     def delete(self, paths: list[str]) -> None:
-        if paths:
-            self._call("DELETE", f"/object/{self.bucket}", json={"prefixes": paths})
+        for path in paths:
+            try:
+                self._file(path).unlink(missing_ok=True)
+            except OSError as e:
+                raise StorageError(f"Couldn't delete {path}: {e}") from e
 
     def close(self) -> None:
-        self._http.close()
+        """Nothing to close (kept so callers can treat storage like a client)."""

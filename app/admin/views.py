@@ -24,8 +24,8 @@ from app.config import Settings
 from app.models import Episode, Genre, Season, Title, TitleGenre, Video
 from app.services.storage import (
     MAX_BYTES,
+    MediaStorage,
     StorageError,
-    SupabaseStorage,
     public_prefix,
 )
 
@@ -199,15 +199,15 @@ def _image_urls_in_use(session: Session, urls: list[str]) -> set[str]:
 
 
 def delete_unused_images(session: Session, urls: list[str]) -> None:
-    """Best effort: remove bucket images that no title/episode uses any more.
+    """Best effort: remove uploaded images that no title/episode uses any more.
 
-    Images outside our bucket (e.g. /images/... paths) are never touched, and an
+    Images outside our media folder (e.g. /images/... paths) are never touched, and an
     image still used by another row (shared demo stills, a reused URL) is kept.
     """
     urls = [u for u in dict.fromkeys(urls) if u]
     if not urls or not (_settings and _settings.storage_enabled):
         return
-    storage = SupabaseStorage.from_settings(_settings)
+    storage = MediaStorage.from_settings(_settings)
     try:
         ours = {u: p for u in urls if (p := storage.path_from_url(u))}
         if not ours:
@@ -235,7 +235,7 @@ def check_video_url(url: str | None) -> str:
 
 
 def check_image_url(label: str, url: str | None) -> None:
-    """Image URLs must be a site path (/images/...) or point into our bucket.
+    """Image URLs must be a site path (/images/...) or point into our media folder.
 
     The frontend only loads images from those places; anything else would break
     every page that shows the title.
@@ -246,10 +246,8 @@ def check_image_url(label: str, url: str | None) -> None:
         return
     if (
         _settings
-        and _settings.supabase_url
-        and url.startswith(
-            public_prefix(_settings.supabase_url, _settings.supabase_bucket)
-        )
+        and _settings.media_public_url
+        and url.startswith(public_prefix(_settings.media_public_url))
     ):
         return
     raise ValueError(
@@ -259,10 +257,10 @@ def check_image_url(label: str, url: str | None) -> None:
 
 
 class ImageUploadMixin:
-    """Adds "Upload …" file fields that send images to Supabase Storage.
+    """Adds "Upload …" file fields that save images into the media folder.
 
     `image_fields` maps a form field to (label, model URL attribute, storage folder).
-    The URL fields stay editable too (a site path or a URL from our bucket).
+    The URL fields stay editable too (a site path or a URL from our media folder).
 
     Files are uploaded *before* the database save (so no DB connection waits on
     the upload) and removed again if the save fails. Replaced images are deleted
@@ -299,11 +297,11 @@ class ImageUploadMixin:
             return []
         if not (_settings and _settings.storage_enabled):
             raise ValueError(
-                "Image uploads need SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env."
+                "Image uploads need MEDIA_ROOT and MEDIA_PUBLIC_URL in .env."
             )
 
         def upload_all() -> list[tuple[str, str]]:
-            storage = SupabaseStorage.from_settings(_settings)
+            storage = MediaStorage.from_settings(_settings)
             done: list[tuple[str, str]] = []
             try:
                 for attr, folder, content in files:

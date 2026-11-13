@@ -1,10 +1,8 @@
-"""Image storage: the Supabase Storage client and admin image uploads (with a fake Supabase)."""
+"""Image storage: the local media folder and admin image uploads."""
 
-import json
 from collections.abc import Iterator
 from pathlib import Path
 
-import httpx
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -17,14 +15,15 @@ from app.config import Settings
 from app.models import Episode, Title
 from app.services.storage import (
     MAX_BYTES,
+    MediaStorage,
     StorageError,
-    SupabaseStorage,
     sniff_image_type,
 )
 from tests.test_admin_hardening import title_form
 
 PASSWORD = "test-password-123"
-BASE = "https://proj.supabase.co"
+BASE = "https://media.example.com"
+PREFIX = f"{BASE}/images/"
 JPEG = b"\xff\xd8\xff\xe0" + b"0" * 100
 PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 100
 OTHER_SLUG = "neon-teahouse"
@@ -34,53 +33,43 @@ STILL = (
 
 
 class FakeStorage:
-    def __init__(self) -> None:
-        self.objects: dict[str, bytes] = {}
+    """A real MediaStorage in a temp folder that also records deletes / can fail."""
+
+    def __init__(self, root: Path) -> None:
+        self.root = root
         self.deleted: list[str] = []
-        self.buckets: dict[str, dict] = {}
         self.fail_folder: str | None = None  # uploads into this folder fail
 
-    def handler(self, request: httpx.Request) -> httpx.Response:
-        path, method = request.url.path, request.method
-        assert request.headers["apikey"] == "service-key"
-        if method == "GET" and path.startswith("/storage/v1/bucket/"):
-            name = path.rsplit("/", 1)[1]
-            if name in self.buckets:
-                return httpx.Response(200, json=self.buckets[name])
-            return httpx.Response(400, json={"message": "Bucket not found"})
-        if method == "POST" and path == "/storage/v1/bucket":
-            body = json.loads(request.content)
-            self.buckets[body["name"]] = body
-            return httpx.Response(200, json={"name": body["name"]})
-        if method == "PUT" and path.startswith("/storage/v1/bucket/"):
-            name = path.rsplit("/", 1)[1]
-            self.buckets[name] = json.loads(request.content)
-            return httpx.Response(200, json={"message": "Successfully updated"})
-        prefix = "/storage/v1/object/images/"
-        if method == "POST" and path.startswith(prefix):
-            if self.fail_folder and path[len(prefix) :].startswith(self.fail_folder):
-                return httpx.Response(500, json={"message": "boom"})
-            self.objects[path[len(prefix) :]] = request.content
-            return httpx.Response(200, json={"Key": path})
-        if method == "DELETE" and path == "/storage/v1/object/images":
-            for p in json.loads(request.content)["prefixes"]:
-                self.deleted.append(p)
-                self.objects.pop(p, None)
-            return httpx.Response(200, json=[])
-        return httpx.Response(404, json={"message": "no route"})
+    @property
+    def objects(self) -> dict[str, bytes]:
+        images = self.root / "images"
+        return {
+            f.relative_to(images).as_posix(): f.read_bytes()
+            for f in images.rglob("*")
+            if f.is_file()
+        }
 
-    def client(self) -> SupabaseStorage:
-        return SupabaseStorage(
-            BASE, "service-key", "images", transport=httpx.MockTransport(self.handler)
-        )
+    def client(self) -> MediaStorage:
+        fake = self
+
+        class Recording(MediaStorage):
+            def save(self, path: str, data: bytes) -> str:
+                if fake.fail_folder and path.startswith(fake.fail_folder):
+                    raise StorageError("boom")
+                return super().save(path, data)
+
+            def delete(self, paths: list[str]) -> None:
+                fake.deleted.extend(paths)
+                super().delete(paths)
+
+        return Recording(self.root, BASE)
 
 
 @pytest.fixture
-def fake_storage() -> FakeStorage:
-    return FakeStorage()
+def fake_storage(tmp_path) -> FakeStorage:
+    return FakeStorage(tmp_path)
 
 
-# ───────── client ─────────
 def test_sniffing_uses_content_not_filename():
     assert sniff_image_type(JPEG) == "image/jpeg"
     assert sniff_image_type(PNG) == "image/png"
@@ -93,12 +82,12 @@ def test_upload_and_urls(fake_storage):
     st = fake_storage.client()
     url = st.upload("posters", JPEG)
     path = st.path_from_url(url)
-    assert url.startswith(
-        f"{BASE}/storage/v1/object/public/images/posters/"
-    ) and url.endswith(".jpg")
+    assert url.startswith(f"{PREFIX}posters/") and url.endswith(".jpg")
     assert fake_storage.objects[path] == JPEG
+    assert (fake_storage.root / "images" / path).read_bytes() == JPEG
     assert st.path_from_url("https://elsewhere.example/x.jpg") is None
     assert st.upload("stills", PNG, name="fixed").endswith("/stills/fixed.png")
+    assert st.upload("stills", JPEG, name="fixed").endswith("/stills/fixed.jpg")
 
 
 def test_upload_rejects_bad_files(fake_storage):
@@ -110,23 +99,20 @@ def test_upload_rejects_bad_files(fake_storage):
     assert fake_storage.objects == {}
 
 
-def test_bucket_is_created_once_and_public(fake_storage):
+@pytest.mark.parametrize(
+    "path", ["../evil.jpg", "posters/../../evil.jpg", "/abs.jpg", "C:/x.jpg", ""]
+)
+def test_paths_cannot_leave_the_images_folder(fake_storage, path):
     st = fake_storage.client()
-    st.ensure_bucket()
-    st.ensure_bucket()
-    assert fake_storage.buckets["images"]["public"] is True
-    assert set(fake_storage.buckets["images"]["allowed_mime_types"]) == {
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-    }
+    with pytest.raises(StorageError, match="Bad image path"):
+        st.save(path, JPEG)
+    with pytest.raises(StorageError, match="Bad image path"):
+        st.delete([path])
+    assert not (fake_storage.root / "evil.jpg").exists()
 
 
-def test_bucket_made_by_hand_gets_fixed(fake_storage):
-    fake_storage.buckets["images"] = {"name": "images", "public": False}
-    fake_storage.client().ensure_bucket()
-    assert fake_storage.buckets["images"]["public"] is True
-    assert fake_storage.buckets["images"]["file_size_limit"] == MAX_BYTES
+def test_delete_missing_file_is_fine(fake_storage):
+    fake_storage.client().delete(["posters/gone.jpg"])
 
 
 # ───────── admin uploads ─────────
@@ -139,15 +125,15 @@ def image_admin(
 
     monkeypatch.setattr(auth_module.asyncio, "sleep", no_wait)
     monkeypatch.setattr(
-        "app.admin.views.SupabaseStorage.from_settings", lambda s: fake_storage.client()
+        "app.admin.views.MediaStorage.from_settings", lambda s: fake_storage.client()
     )
     api = FastAPI()
     settings = Settings(
         _env_file=None,
         admin_password=PASSWORD,
         admin_secret_key="k" * 32,
-        supabase_url=BASE,
-        supabase_service_role_key="service-key",
+        media_root=fake_storage.root,
+        media_public_url=BASE,
     )
     setup_admin(api, db.get_bind(), settings)
     with TestClient(api, base_url="http://testserver") as c:
@@ -171,14 +157,14 @@ def test_upload_poster_on_edit(image_admin, db, fake_storage):
     )
     assert r.status_code in (302, 303), r.text[:300]
     t = get_title(db, "hollow-tide")
-    assert t.poster_url.startswith(f"{BASE}/storage/v1/object/public/images/posters/")
+    assert t.poster_url.startswith(f"{PREFIX}posters/")
     assert t.backdrop_url != t.poster_url  # only the uploaded field changed
     assert fake_storage.objects  # stored
     assert old_poster != t.poster_url
 
 
 def bucket_url(path: str) -> str:
-    return f"{BASE}/storage/v1/object/public/images/{path}"
+    return PREFIX + path
 
 
 def test_replacing_an_image_deletes_it_only_when_nothing_else_uses_it(
@@ -422,7 +408,7 @@ def test_upload_without_storage_configured(db, monkeypatch):
             data=title_form(t),
             files={"poster_file": ("a.jpg", JPEG, "image/jpeg")},
         )
-        assert r.status_code == 400 and "SUPABASE_URL" in r.text
+        assert r.status_code == 400 and "MEDIA_ROOT" in r.text
 
 
 @pytest.mark.skipif(not STILL.exists(), reason="reelm-fe stills not present")

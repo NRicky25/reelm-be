@@ -49,7 +49,7 @@ class ReelmAdmin(Admin):
 
     SQLAdmin assumes every file input is a file column on the model and, when
     editing with no file chosen, calls getattr(model, "poster_file") - which
-    doesn't exist (our files go to Supabase, see ImageUploadMixin) -> 500.
+    doesn't exist (our files go to the media folder, see ImageUploadMixin) -> 500.
     We pass the form through as-is; the mixin ignores empty file inputs.
     """
 

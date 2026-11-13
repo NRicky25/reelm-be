@@ -73,47 +73,44 @@ Defaults to a local `reelm.db` SQLite file. To use Supabase:
 - Latency: every page needs a few database round trips, so host the backend in the **same region** as the
   database (this project: `ap-south-1`).
 
-## Images (Supabase Storage)
+## Media: images and videos (self-hosted)
 
-Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API keys: the **secret / service_role**
-key; it never goes in the frontend). Images live in a public bucket `images` (created automatically):
+Images and videos live in one folder on this PC, `MEDIA_ROOT` (e.g. `D:\reelm-media`), with
+`images/` and `videos/` inside. The **media server** serves it read-only, and a Cloudflare
+Tunnel publishes it as `MEDIA_PUBLIC_URL` (e.g. `https://media.reelm.site`):
 
-- `uv run python -m scripts.upload_stills` uploads the demo stills (`stills/`) and points the catalogue at them.
-  Run it again after `scripts.seed --reset`.
-- In the admin, titles have **Upload poster / Upload backdrop** and episodes **Upload thumbnail**. JPEG, PNG or
-  WebP up to 8 MB (checked by content, not file name). Replacing an image deletes the old upload, except the
-  shared demo stills.
-- Uploaded files get unique names and are cached by Supabase's CDN, so a deleted image can stay reachable at its
-  old URL until the cache expires.
+```
+uv run uvicorn app.media_server:app --host 127.0.0.1 --port 8090
+```
 
-## Videos (Cloudflare R2)
+It serves only `images/` and `videos/` (GET/HEAD, no folder listings, no hidden files), sends
+CORS `*` and the right types for HLS (`.m3u8`, `.ts`), and hides a video folder while
+reelm-encoder is still writing it (`.incomplete` marker).
 
-Videos are encoded on your PC with [reelm-encoder](https://github.com/NRicky25/reelm-encoder)
-(1080p / 720p / 480p HLS) and hosted on **Cloudflare R2**, which doesn't charge for streaming
-to viewers. A video in Reelm is just a **link + duration**.
+**Images:** in the admin, titles have **Upload poster / Upload backdrop** and episodes
+**Upload thumbnail**. JPEG, PNG or WebP up to 8 MB (checked by content, not file name),
+saved as `images/<posters|backdrops|thumbnails>/<random>.jpg`. Replacing an image deletes the
+old file unless another row still uses it.
 
-**R2 bucket (once):** Cloudflare → R2 → create a bucket, then in its Settings:
+- `uv run python -m scripts.upload_stills` copies the demo stills into `images/stills/` and
+  points the catalogue at them. Run it again after `scripts.seed --reset`.
+- `uv run python -m scripts.move_images_from_supabase` copies images still on Supabase
+  Storage into the media folder and rewrites their URLs (safe to run again).
 
-- **Public Development URL → Enable** (testing; rate-limited), or for production
-  **Custom Domains → Connect** (e.g. `media.example.com`).
-- **CORS policy**, so the website may load the videos (add your real site when deployed):
-  ```json
-  [{ "AllowedOrigins": ["http://localhost:3000", "http://127.0.0.1:3000"],
-     "AllowedMethods": ["GET", "HEAD"], "AllowedHeaders": ["*"], "MaxAgeSeconds": 86400 }]
-  ```
+**Videos** are encoded on this PC with [reelm-encoder](https://github.com/NRicky25/reelm-encoder)
+(1080p / 720p / 480p HLS) straight into `MEDIA_ROOT\videos` (set its `WORK_DIR`). A video in
+Reelm is just a **link + duration**.
 
 **Adding a video:**
 
-1. Encode it with Reelm Encoder; you get a folder like `episode-1-3f9a2c`.
-2. Upload that folder into the bucket under `videos/`.
-3. Admin → **Media → Videos → New**: paste the link
-   `https://<bucket URL>/videos/<folder>/master.m3u8` and the duration (R2 Uploader shows
-   both). **Subtitles**: the language codes of the `.vtt` files in that folder, e.g. `en` for
+1. Encode it with Reelm Encoder; you get a folder like `videos/episode-1-3f9a2c`.
+2. Admin → **Media → Videos → New**: paste the link the encoder shows,
+   `https://media.reelm.site/videos/<folder>/master.m3u8`, and the duration. **Subtitles**: the language codes of the `.vtt` files in that folder, e.g. `en` for
    `en.vtt` (or `en, es`); the player then offers them in its Subtitles menu.
-4. Open the episode (or movie), choose that video, set its **Duration**, Save.
+3. Open the episode (or movie), choose that video, set its **Duration**, Save.
 
-Deleting an episode / movie / video in the admin removes the row only: delete the folder in
-the R2 dashboard too, or it keeps counting toward storage.
+Deleting an episode / movie / video in the admin removes the row only: delete its folder
+from `MEDIA_ROOT\videos` too.
 
 `app/services/video_url.py` builds the playback URL, so changing host later only changes
 that file.
